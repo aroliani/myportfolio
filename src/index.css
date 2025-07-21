@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-[#0d1117] text-[#c9d1d9] font-sans;
+}
+
+.nav-link-active {
+    color: #22c55e;
+    text-shadow: 0 0 8px #22c55e;
+}
+
+#subtitle-cursor {
+    display: inline-block;
+    background-color: #38bdf8;
+    margin-left: 0.1em;
+    width: 3px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.gemini-output {
+    @apply whitespace-pre-wrap bg-[#161b22] border-l-4 border-green-500 p-4 mt-4 rounded-md font-mono;
+}
+
+.loader {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #374151;
+    border-bottom-color: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
