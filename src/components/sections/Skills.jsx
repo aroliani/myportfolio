@@ -1,17 +1,30 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
 const skillsData = {
-    "Bahasa Pemrograman & Scripting": [ { name: "Python", icon: "devicon-python-plain colored" }, { name: "JavaScript", icon: "devicon-javascript-plain colored" }, { name: "Bash", icon: "devicon-bash-plain" }, { name: "PowerShell", icon: "devicon-powershell-plain" }, { name: "Go", icon: "devicon-go-original-wordmark colored" }, { name: "C++", icon: "devicon-cplusplus-plain colored" }, { name: "SQL", icon: "devicon-postgresql-plain colored" }, { name: "HTML5", icon: "devicon-html5-plain colored" }, { name: "CSS3", icon: "devicon-css3-plain colored" } ],
-    "Tools Keamanan": [ { name: "Nmap", icon: "devicon-linux-plain" }, { name: "Wireshark", icon: "devicon-redhat-plain" }, { name: "Metasploit", icon: "devicon-debian-plain" }, { name: "Burp Suite", icon: "devicon-devicon-plain" }, { name: "OWASP ZAP", icon: "devicon-devicon-plain" }, { name: "Ghidra", icon: "devicon-devicon-plain" }, { name: "Volatility", icon: "devicon-devicon-plain" }, { name: "John the Ripper", icon: "devicon-devicon-plain" } ],
-    "Framework & Teknologi": [ { name: "Docker", icon: "devicon-docker-plain colored" }, { name: "Kubernetes", icon: "devicon-kubernetes-plain colored" }, { name: "AWS", icon: "devicon-amazonwebservices-original colored" }, { name: "Azure", icon: "devicon-azure-plain colored" }, { name: "Linux", icon: "devicon-linux-plain" }, { name: "Windows", icon: "devicon-windows8-original" }, { name: "Splunk", icon: "devicon-devicon-plain" }, { name: "ELK Stack", icon: "devicon-elasticsearch-plain colored" } ]
+    "Web & Programming": [ { name: "HTML", icon: "devicon-html5-plain colored" }, { name: "CSS", icon: "devicon-css3-plain colored" }, { name: "JavaScript", icon: "devicon-javascript-plain colored" }, { name: "React JS", icon: "devicon-react-original colored" }, { name: "PHP", icon: "devicon-php-plain colored" }, { name: "Laravel", icon: "devicon-laravel-plain colored" }, { name: "Java", icon: "devicon-java-plain colored" }, { name: "SQL", icon: "devicon-mysql-plain colored" }, { name: "MongoDB", icon: "devicon-mongodb-plain colored" }, { name: "Firebase", icon: "devicon-firebase-plain colored" } ],
+    "Cyber Security & Tools": [ { name: "OSINT", icon: "devicon-devicon-plain" }, { name: "Penetration Testing", icon: "devicon-devicon-plain" }, { name: "CLI", icon: "devicon-bash-plain" }, { name: "Github", icon: "devicon-github-original" } ],
+    "Design": [ { name: "Figma", icon: "devicon-figma-plain colored" }, { name: "Canva", icon: "devicon-devicon-plain" } ]
 };
 
 const Skills = () => (
-  <section id="skills" className="py-20 md:py-24 bg-black/30">
+  <motion.section 
+    id="skills" 
+    className="py-20 md:py-24 bg-black/30"
+    variants={sectionVariants}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ amount: 0.2 }} 
+  >
     <div className="container mx-auto px-6">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-green-400 font-mono">Skills & Tools</h2>
-        <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Inventaris visual dari bahasa pemrograman, tools, dan teknologi yang dikuasai.</p>
+        <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">A visual inventory of mastered programming languages, tools, and technologies.</p>
       </div>
       <div className="max-w-5xl mx-auto space-y-10">
         {Object.entries(skillsData).map(([category, skills]) => (
@@ -29,7 +42,7 @@ const Skills = () => (
         ))}
       </div>
     </div>
-  </section>
+  </motion.section>
 );
 
 export default Skills;

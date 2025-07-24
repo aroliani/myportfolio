@@ -3,56 +3,38 @@ import { GithubOutlined, FileSearchOutlined, CloseOutlined } from '@ant-design/i
 import { AnimatePresence, motion } from 'framer-motion';
 
 import projectImage1 from '../../assets/1welcoming.jpg'; 
-import projectImage2 from '../../assets/foto.jpg';
-import projectImage3 from '../../assets/foto.jpg';
-import projectImage4 from '../../assets/foto.jpg';
-import projectImage5 from '../../assets/foto.jpg';
-import projectImage6 from '../../assets/foto.jpg';
+import projectImage2 from '../../assets/healthcare.png';
+import projectImage3 from '../../assets/wumpus.png';
+import projectImage4 from '../../assets/music.png';
+import projectImage5 from '../../assets/srmweb.png';
+import projectImage6 from '../../assets/srmfig.png';
+import projectImage7 from '../../assets/boosh.png';
+import projectImage8 from '../../assets/ctf.jpg';
+import projectImage9 from '../../assets/prof.png';
 
-// --- For the modal so when you click on the image it opens the modal --- //
+const sectionVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
 const ProjectModal = ({ project, onClose, onImageClick }) => {
   if (!project) return null;
-
-  const modalVariants = {
-    hidden: { y: "-50px", opacity: 0 },
-    visible: { y: "0", opacity: 1, transition: { type: "spring", stiffness: 120 } },
-  };
-
+  const modalVariants = { hidden: { y: "-50px", opacity: 0 }, visible: { y: "0", opacity: 1, transition: { type: "spring", stiffness: 120 } } };
   return (
-    <motion.div
-      className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl shadow-sky-500/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative"
-      variants={modalVariants}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl z-20">
-        <CloseOutlined />
-      </button>
-      <img 
-        src={project.imageUrl} 
-        alt={`Pratinjau ${project.title}`} 
-        className="w-full h-auto aspect-video object-cover rounded-t-lg cursor-pointer transition-transform hover:scale-105"
-        onClick={() => onImageClick(project.imageUrl)}
-      />
+    <motion.div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl shadow-sky-500/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative" variants={modalVariants} onClick={(e) => e.stopPropagation()}>
+      <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl z-20"><CloseOutlined /></button>
+      <img src={project.imageUrl} alt={`Preview of ${project.title}`} className="w-full h-auto aspect-video object-cover rounded-t-lg cursor-pointer transition-transform hover:scale-105" onClick={() => onImageClick(project.imageUrl)} />
       <div className="p-8">
           <h2 className="text-3xl font-bold text-green-400 font-mono mb-2">{project.title}</h2>
           <p className="text-gray-400 leading-relaxed mb-6">{project.longDescription}</p>
-          
           <div className="border-t border-gray-700 pt-6 space-y-4">
             <div>
-              <h4 className="text-sm font-bold text-sky-400 font-mono uppercase tracking-wider mb-2">Skills yang Didapat</h4>
-              <div className="flex flex-wrap gap-2">
-                {project.skills.map(skill => (
-                  <span key={skill} className="bg-sky-900/50 text-sky-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{skill}</span>
-                ))}
-              </div>
+              <h4 className="text-sm font-bold text-sky-400 font-mono uppercase tracking-wider mb-2">Acquired Skills</h4>
+              <div className="flex flex-wrap gap-2">{project.skills.map(skill => (<span key={skill} className="bg-sky-900/50 text-sky-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{skill}</span>))}</div>
             </div>
             <div>
-              <h4 className="text-sm font-bold text-green-400 font-mono uppercase tracking-wider mb-2">Tools yang Dipakai</h4>
-              <div className="flex flex-wrap gap-2">
-                {project.tools.map(tool => (
-                  <span key={tool} className="bg-green-900/50 text-green-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{tool}</span>
-                ))}
-              </div>
+              <h4 className="text-sm font-bold text-green-400 font-mono uppercase tracking-wider mb-2">Tools & Technologies</h4>
+              <div className="flex flex-wrap gap-2">{project.tools.map(tool => (<span key={tool} className="bg-green-900/50 text-green-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{tool}</span>))}</div>
             </div>
           </div>
       </div>
@@ -60,163 +42,143 @@ const ProjectModal = ({ project, onClose, onImageClick }) => {
   );
 };
 
-// --- For view the details of the picture on fullscreen --- //
-const FullscreenImageView = ({ imageUrl, onClose }) => {
-    return (
-        <motion.div
-            className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-        >
-            <button onClick={onClose} className="absolute top-6 right-6 text-white text-3xl z-20">
-              <CloseOutlined />
-            </button>
-            <motion.img 
-                src={imageUrl} 
-                alt="Pratinjau Gambar Fullscreen" 
-                className="max-w-full max-h-full object-contain"
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.8 }}
-            />
-        </motion.div>
-    )
-}
+const FullscreenImageView = ({ imageUrl, onClose }) => (
+    <motion.div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+        <button onClick={onClose} className="absolute top-6 right-6 text-white text-3xl z-20"><CloseOutlined /></button>
+        <motion.img src={imageUrl} alt="Fullscreen Image Preview" className="max-w-full max-h-full object-contain" initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }} />
+    </motion.div>
+);
 
-
-// --- The projects --- //
 const projectData = [ 
     { 
-      id: 1, title: 'MedEase Health Service App', 
-      description: 'Developed a full-stack health application with user profiling and medicine purchasing functionalities.', 
-      longDescription: 'MedEase is a comprehensive healthcare service application. I developed key backend and frontend components using Flask and MongoDB, implementing functionalities like user profile management and a secure system for purchasing medicine.',
-      skills: ['Full-Stack Development', 'Database Management', 'User Authentication'],
-      tools: ['Flask', 'Python', 'MongoDB', 'JavaScript'], 
-      githubUrl: 'https://github.com/aroliani/MedEase_final', imageUrl: projectImage3
+      id: 1, 
+      title: 'MedEase: A Mobile Health Management Application', 
+      description: 'Built a mobile health service app using Android Studio (Java & XML) and Firebase for a seamless user experience.', 
+      longDescription: 'MedEase is a comprehensive mobile health application designed to simplify access to healthcare services. Key features I implemented include secure user registration and login, profile management with photo uploads, and functionalities for booking lab tests and doctor appointments. The application also provides access to health articles and videos, with all data managed through Firebase.',
+      skills: ['Mobile App Development', 'Database Integration', 'UI/UX Implementation', 'User Authentication'],
+      tools: ['Java', 'XML', 'Android Studio', 'Firebase'], 
+      githubUrl: 'https://github.com/aroliani/MedEase_final', 
+      imageUrl: projectImage1
+    },
+    { 
+      id: 2, 
+      title: 'HealthCare Diagnosis App', 
+      description: 'Designed and implemented disease diagnosis features in a health application using JavaScript for front-end and back-end logic.', 
+      longDescription: 'This project focused on creating a smart tool for health and wellness. I was responsible for designing and implementing the core disease diagnosis feature. This involved writing JavaScript logic for both the front-end user interface and the back-end processing to provide users with health recommendations.', 
+      skills: ['Full-Stack JavaScript', 'Algorithm Design', 'UI/UX Logic'], tools: ['JavaScript', 'HTML', 'CSS'], 
+      githubUrl: 'https://github.com/aroliani/healthcare-web.git', 
+      imageUrl: projectImage2 
+    }, 
+    { id: 3, 
+      title: 'Wumpus World AI Game', 
+      description: 'Developed a web-based game incorporating artificial intelligence techniques.', 
+      longDescription: 'Developed a logic-based grid game where an agent navigates, avoids dangers, collects gold, and defeats enemies using Alpha-Beta Pruning and decision-making algorithms. Implemented using HTML, JavaScript, and CSS with a focus on autonomous movement and strategy optimization.', 
+      skills: ['Game Development', 'Artificial Intelligence', 'Project Management'], 
+      tools: ['HTML', 'CSS', 'Javascript', 'AI Algorithms'], 
+      githubUrl: 'https://github.com/aroliani/wumpus-game.git', 
+      imageUrl: projectImage3
+    },
+    { 
+      id: 5, title: 'Music Discovery Platform', 
+      description: 'Engineered a full-stack web app for music discovery with a Node.js backend and React frontend.', 
+      longDescription: 'A web application for discovering new music based on user preferences. Users can log in, search for the music posts, view recommendations, and create their own music post. The backend is built with Node.js and Express, using MongoDB for the database. The frontend is a responsive single-page application built with React.',
+      skills: ['Full-Stack Development', 'API Integration', 'User Authentication', 'Frontend Development'],
+      tools: ['Node.js', 'Express', 'MongoDB', 'React', 'AWS'], 
+      githubUrl: 'https://github.com/aroliani/music-discovery-project', 
+      imageUrl: projectImage4
+    },
+    { 
+      id: 6, 
+      title: 'Security Risk Management Dashboard Website', 
+      description: 'Developed a dashboard to visualize security assessment data and track organizational risks using Python', 
+      longDescription: 'A Security Risk Management (SRM) Dashboard built with Python. This application visualizes security assessment data from MongoDB, tracks risks, and helps generate reports. It is designed to assist security teams in monitoring and managing their organizational risk posture effectively.',
+      skills: ['Backend Development', 'Data Visualization', 'Risk Management'],
+      tools: ['Python', 'Flask', 'MongoDB'], 
+      githubUrl: 'https://github.com/aroliani/srm-dashboard', 
+      imageUrl: projectImage5
     }, 
     { 
-      id: 2, title: 'Simulasi Phishing Internal', 
-      description: 'Merancang dan melaksanakan kampanye phishing untuk mengukur kesadaran keamanan.', 
-      longDescription: 'Sebuah kampanye simulasi phishing dirancang untuk menguji kewaspadaan karyawan terhadap serangan rekayasa sosial. Skenario email dibuat semirip mungkin dengan email phishing asli. Hasilnya menunjukkan tingkat klik sebesar 30%, yang menjadi dasar untuk program pelatihan kesadaran keamanan yang lebih terfokus dan efektif.',
-      skills: ['Social Engineering', 'Security Awareness', 'Campaign Management'],
-      tools: ['Gophish', 'SMTP Servers'], 
-      githubUrl: 'https://github.com/username/repo2', imageUrl: projectImage2
+      id: 7,
+      title: 'Security Risk Management Dashboard UI/UX', 
+      description: 'Designed a comprehensive and user-friendly dashboard for a Security Risk Management (SRM) system.', 
+      longDescription: 'This project focused on the UI/UX design for a Security Risk Management (SRM) Dashboard. The primary goal was to create an intuitive, data-rich interface for security teams to characterize systems, identify threats, analyze risks, and track mitigation progress. The design, created in Figma, emphasizes clarity and ease of use, allowing users to quickly assess risk posture through various charts and summaries.',
+      skills: ['UI/UX Design', 'Dashboard Design', 'Prototyping', 'User-Centered Design'],
+      tools: ['Figma'], 
+      githubUrl: 'https://www.figma.com/proto/vx7edWf7celmBjQjRSa6yA/srm---aroliani?node-id=0-1&t=l0fshorK0bMI9zZz-1', 
+      imageUrl: projectImage6 
+    },
+    { 
+      id: 8, 
+      title: 'BOOSH - Bus Schedule UI/UX', 
+      description: 'Designed a user-friendly, web-based interface for a student dormitory bus scheduling system.', 
+      longDescription: 'This project focused on the UI/UX design for a conceptual platform to manage student bus schedules. The primary goal was to create a highly user-friendly interface that emphasized real-time schedule tracking and simulated an online booking process, designed with Canva.', 
+      skills: ['UI/UX Design', 'Prototyping', 'User-Centered Design'], 
+      tools: ['Canva'], 
+      githubUrl: 'https://www.canva.com/design/DAFzJBwEebE/CNyyTyLGzSL08b_p2XN7qA/edit?utm_content=DAFzJBwEebE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', 
+      imageUrl: projectImage7
+    },
+    { 
+      id: 9, 
+      title: 'CTF Participant', 
+      description: 'Solved CTF-style tasks involving Web Exploitation and Cryptography using various security tools.', 
+      longDescription: 'Participated in a Capture The Flag competition, focusing on web exploitation and cryptography challenges. Gained practical experience in vulnerability analysis, encryption, and logical problem-solving using tools such as Burp Suite, CyberChef, and Wireshark.',
+      skills: ['Web Exploitation', 'Cryptography', 'Vulnerability Analysis', 'Problem Solving', 'Digital Forensics'],
+      tools: ['Burp Suite', 'CyberChef', 'Wireshark', 'Python', 'Linux', 'StegSolve', 'CyberChef', 'Hashcat', 'Base64'], 
+      githubUrl: '#', 
+      imageUrl: projectImage8
+    },
+    { 
+      id: 10, 
+      title: 'Hacker Profiling (OSINT)', 
+      description: 'Led a cybersecurity project using OSINT to profile hackers, in collaboration with the Ministry of Defence.', 
+      longDescription: 'In a collaborative project with the Ministry of Defence of The Republic Of Indonesia, I led a team to conduct Open-Source Intelligence (OSINT) operations[cite: 102]. [cite_start]We successfully profiled five hackers known for targeting Indonesian digital infrastructure, simulated ethical phishing attacks, and developed strategic threat intelligence reports based on our findings.',
+      skills: ['OSINT', 'Threat Intelligence', 'Ethical Phishing', 'Team Leadership'],
+      tools: ['Ngrok', 'Seeker', 'SEToolkit', 'WhatsMyName', 'VerifyMail', 'TheHarvester', 'Whois Lookup', 'Google Dorking', 'Linux CLI', 'DefacerID'], 
+      githubUrl: '#', 
+      imageUrl: projectImage9
     }, 
-    { 
-      id: 3, title: 'Forensik Jaringan', 
-      description: 'Menganalisis lalu lintas jaringan untuk menginvestigasi insiden pelanggaran data.', 
-      longDescription: 'Setelah terdeteksi aktivitas mencurigakan di jaringan, dilakukan analisis mendalam terhadap tangkapan paket (PCAP). Dengan menggunakan Wireshark, berhasil diidentifikasi komunikasi ke server Command & Control (C2) yang tidak dikenal. Jejak digital ini membantu dalam memahami skala insiden dan mengisolasi sistem yang terinfeksi.',
-      skills: ['Network Forensics', 'Packet Analysis', 'Incident Investigation'],
-      tools: ['Wireshark', 'Volatility', 'SIEM'], 
-      githubUrl: 'https://github.com/username/repo3', imageUrl: projectImage3
-    },
-    { 
-      id: 4, title: 'Pengembangan Secure SDLC', 
-      description: 'Mengintegrasikan tool SAST & DAST ke dalam pipeline CI/CD untuk otomatisasi keamanan.', 
-      longDescription: 'Proyek ini berfokus pada pendekatan "Shift Left" dengan mengintegrasikan keamanan ke dalam siklus hidup pengembangan perangkat lunak. Alat Static Application Security Testing (SAST) seperti SonarQube dan Dynamic Application Security Testing (DAST) diintegrasikan ke dalam pipeline Jenkins, memungkinkan deteksi dini kerentanan sebelum aplikasi dirilis ke produksi.',
-      skills: ['DevSecOps', 'CI/CD Security', 'Automation'],
-      tools: ['Jenkins', 'SonarQube', 'GitLab CI'], 
-      githubUrl: 'https://github.com/username/repo4', imageUrl: projectImage4
-    },
-    { 
-      id: 5, title: 'Analisis Ancaman Insider', 
-      description: 'Membangun dashboard UBA untuk mendeteksi anomali aktivitas pengguna internal.', 
-      longDescription: 'Dengan memanfaatkan data log dari berbagai sumber, sebuah dasbor User Behavior Analytics (UBA) dibangun menggunakan ELK Stack. Dasbor ini mampu memvisualisasikan pola aktivitas normal pengguna dan memberikan peringatan jika terdeteksi adanya anomali, seperti akses file di luar jam kerja atau eskalasi hak istimewa yang tidak wajar.',
-      skills: ['Data Analysis', 'Threat Hunting', 'UBA'],
-      tools: ['SIEM', 'Python', 'ELK Stack'], 
-      githubUrl: 'https://github.com/username/repo5', imageUrl: projectImage5
-    },
-    { 
-      id: 6, title: 'Red Team Engagement', 
-      description: 'Melakukan emulasi serangan tingkat lanjut berdasarkan framework MITRE ATT&CK.', 
-      longDescription: 'Sebagai bagian dari tim merah, dilakukan simulasi serangan yang meniru taktik, teknik, dan prosedur (TTP) dari kelompok Advanced Persistent Threat (APT) tertentu. Engagement ini berhasil menguji ketahanan tim biru (tim pertahanan) dan mengidentifikasi celah dalam deteksi dan respons insiden, yang kemudian digunakan untuk memperkuat pertahanan.',
-      skills: ['Adversary Emulation', 'MITRE ATT&CK', 'Penetration Testing'],
-      tools: ['C2 Frameworks', 'AWS', 'Terraform'], 
-      githubUrl: 'https://github.com/username/repo6', imageUrl: projectImage6
-    }
 ];
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [fullscreenImage, setFullscreenImage] = useState(null);
-
-  const handleCardClick = (project) => {
-    setSelectedProject(project);
-  };
-
-  const handleImageClick = (e, imageUrl) => {
-    e.stopPropagation();
-    setFullscreenImage(imageUrl);
-  };
+  const handleCardClick = (project) => { setSelectedProject(project); };
+  const handleImageClick = (e, imageUrl) => { e.stopPropagation(); setFullscreenImage(imageUrl); };
 
   return (
     <>
-      <section id="case-studies" className="py-20 md:py-24 bg-gray-900/50">
+      <motion.section 
+        id="projects" 
+        className="py-20 md:py-24 bg-gray-900/50"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ amount: 0.1 }} 
+      >
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-green-400 font-mono">Projects</h2>
-            <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Analisis singkat dari beberapa proyek dan simulasi keamanan yang pernah ditangani.</p>
+            <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">A brief analysis of several projects and security simulations handled.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projectData.map((project) => (
-              <div 
-                key={project.id} 
-                className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/20 hover:-translate-y-2 cursor-pointer group"
-                onClick={() => handleCardClick(project)}
-              >
-                <div className="overflow-hidden">
-                    <img src={project.imageUrl} alt={`Pratinjau ${project.title}`} className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110" />
-                </div>
+              <div key={project.id} className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/20 hover:-translate-y-2 cursor-pointer group" onClick={() => handleCardClick(project)}>
+                <div className="overflow-hidden"><img src={project.imageUrl} alt={`Preview of ${project.title}`} className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110" /></div>
                 <div className="p-6 flex flex-col flex-grow h-full">
                   <h3 className="text-xl font-bold text-green-400 mb-2 font-mono">{project.title}</h3>
                   <p className="text-gray-400 mb-4 flex-grow">{project.description}</p>
                   <div className="mt-auto pt-4 border-t border-gray-700/50 flex justify-end items-center gap-4">
-                    <span className="text-gray-400 text-2xl" title="Lihat Detail">
-                      <FileSearchOutlined />
-                    </span>
-                    <a 
-                      href={project.githubUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      title="Lihat di GitHub" 
-                      className="text-gray-400 hover:text-white transition-colors text-2xl z-10"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <GithubOutlined />
-                    </a>
+                    <span className="text-gray-400 text-2xl" title="View Details"><FileSearchOutlined /></span>
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" title="View on GitHub" className="text-gray-400 hover:text-white transition-colors text-2xl z-10" onClick={(e) => e.stopPropagation()}><GithubOutlined /></a>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </section>
-
-      <AnimatePresence>
-        {selectedProject && (
-          <motion.div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedProject(null)}
-          >
-            <ProjectModal 
-              project={selectedProject} 
-              onClose={() => setSelectedProject(null)} 
-              onImageClick={(imageUrl) => handleImageClick(event, imageUrl)}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {fullscreenImage && (
-            <FullscreenImageView imageUrl={fullscreenImage} onClose={() => setFullscreenImage(null)} />
-        )}
-      </AnimatePresence>
+      </motion.section>
+      <AnimatePresence>{selectedProject && (<motion.div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedProject(null)}><ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} onImageClick={(imageUrl) => handleImageClick(event, imageUrl)} /></motion.div>)}</AnimatePresence>
+      <AnimatePresence>{fullscreenImage && (<FullscreenImageView imageUrl={fullscreenImage} onClose={() => setFullscreenImage(null)} />)}</AnimatePresence>
     </>
   );
 };
