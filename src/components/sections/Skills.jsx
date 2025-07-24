@@ -7,9 +7,37 @@ const sectionVariants = {
 };
 
 const skillsData = {
-    "Web & Programming": [ { name: "HTML", icon: "devicon-html5-plain colored" }, { name: "CSS", icon: "devicon-css3-plain colored" }, { name: "JavaScript", icon: "devicon-javascript-plain colored" }, { name: "React JS", icon: "devicon-react-original colored" }, { name: "PHP", icon: "devicon-php-plain colored" }, { name: "Laravel", icon: "devicon-laravel-plain colored" }, { name: "Java", icon: "devicon-java-plain colored" }, { name: "SQL", icon: "devicon-mysql-plain colored" }, { name: "MongoDB", icon: "devicon-mongodb-plain colored" }, { name: "Firebase", icon: "devicon-firebase-plain colored" } ],
-    "Cyber Security & Tools": [ { name: "OSINT", icon: "devicon-devicon-plain" }, { name: "Penetration Testing", icon: "devicon-devicon-plain" }, { name: "CLI", icon: "devicon-bash-plain" }, { name: "Github", icon: "devicon-github-original" } ],
-    "Design": [ { name: "Figma", icon: "devicon-figma-plain colored" }, { name: "Canva", icon: "devicon-devicon-plain" } ]
+    "Web & Mobile Development": [ 
+        { name: "HTML", icon: "devicon-html5-plain colored" }, 
+        { name: "CSS", icon: "devicon-css3-plain colored" }, 
+        { name: "JavaScript", icon: "devicon-javascript-plain colored" }, 
+        { name: "React JS", icon: "devicon-react-original colored" }, 
+        { name: "Node.js", icon: "devicon-nodejs-plain colored" },
+        { name: "Express", icon: "devicon-express-original" },
+        { name: "PHP", icon: "devicon-php-plain colored" }, 
+        { name: "Java", icon: "devicon-java-plain colored" },
+        { name: "Python", icon: "devicon-python-plain colored" },
+        { name: "Android Studio", icon: "devicon-androidstudio-plain colored" },
+    ],
+    "Databases": [
+        { name: "SQL", icon: "devicon-mysql-plain colored" }, 
+        { name: "MongoDB", icon: "devicon-mongodb-plain colored" }, 
+        { name: "Firebase", icon: "devicon-firebase-plain colored" }
+    ],
+    "Cyber Security & Tools": [ 
+        { name: "OSINT", icon: "devicon-devicon-plain" }, 
+        { name: "Penetration Testing", icon: "devicon-devicon-plain" }, 
+        { name: "Linux CLI", icon: "devicon-linux-plain" }, 
+        { name: "Burp Suite", icon: "devicon-devicon-plain" },
+        { name: "Wireshark", icon: "devicon-devicon-plain" },
+        { name: "SEToolkit", icon: "devicon-devicon-plain" },
+        { name: "Github", icon: "devicon-github-original" },
+        { name: "AWS", icon: "devicon-amazonwebservices-original colored" }
+    ],
+    "Design & Prototyping": [ 
+        { name: "Figma", icon: "devicon-figma-plain colored" }, 
+        { name: "Canva", icon: "devicon-canva-original colored" } 
+    ]
 };
 
 const Skills = () => (
@@ -24,7 +52,7 @@ const Skills = () => (
     <div className="container mx-auto px-6">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-green-400 font-mono">Skills & Tools</h2>
-        <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">A visual inventory of mastered programming languages, tools, and technologies.</p>
+        <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">A comprehensive list of tools and technologies leveraged throughout projects</p>
       </div>
       <div className="max-w-5xl mx-auto space-y-10">
         {Object.entries(skillsData).map(([category, skills]) => (

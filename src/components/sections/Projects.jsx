@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GithubOutlined, FileSearchOutlined, CloseOutlined } from '@ant-design/icons';
+import { GithubOutlined, FileSearchOutlined, CloseOutlined, ExperimentOutlined } from '@ant-design/icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import projectImage1 from '../../assets/1welcoming.jpg'; 
@@ -57,7 +57,7 @@ const projectData = [
       longDescription: 'MedEase is a comprehensive mobile health application designed to simplify access to healthcare services. Key features I implemented include secure user registration and login, profile management with photo uploads, and functionalities for booking lab tests and doctor appointments. The application also provides access to health articles and videos, with all data managed through Firebase.',
       skills: ['Mobile App Development', 'Database Integration', 'UI/UX Implementation', 'User Authentication'],
       tools: ['Java', 'XML', 'Android Studio', 'Firebase'], 
-      githubUrl: 'https://github.com/aroliani/MedEase_final', 
+      linkUrl: 'https://github.com/aroliani/MedEase_final', 
       imageUrl: projectImage1
     },
     { 
@@ -66,7 +66,7 @@ const projectData = [
       description: 'Designed and implemented disease diagnosis features in a health application using JavaScript for front-end and back-end logic.', 
       longDescription: 'This project focused on creating a smart tool for health and wellness. I was responsible for designing and implementing the core disease diagnosis feature. This involved writing JavaScript logic for both the front-end user interface and the back-end processing to provide users with health recommendations.', 
       skills: ['Full-Stack JavaScript', 'Algorithm Design', 'UI/UX Logic'], tools: ['JavaScript', 'HTML', 'CSS'], 
-      githubUrl: 'https://github.com/aroliani/healthcare-web.git', 
+      linkUrl: 'https://github.com/aroliani/healthcare-web.git', 
       imageUrl: projectImage2 
     }, 
     { id: 3, 
@@ -75,7 +75,7 @@ const projectData = [
       longDescription: 'Developed a logic-based grid game where an agent navigates, avoids dangers, collects gold, and defeats enemies using Alpha-Beta Pruning and decision-making algorithms. Implemented using HTML, JavaScript, and CSS with a focus on autonomous movement and strategy optimization.', 
       skills: ['Game Development', 'Artificial Intelligence', 'Project Management'], 
       tools: ['HTML', 'CSS', 'Javascript', 'AI Algorithms'], 
-      githubUrl: 'https://github.com/aroliani/wumpus-game.git', 
+      linkUrl: 'https://github.com/aroliani/wumpus-game.git', 
       imageUrl: projectImage3
     },
     { 
@@ -84,7 +84,7 @@ const projectData = [
       longDescription: 'A web application for discovering new music based on user preferences. Users can log in, search for the music posts, view recommendations, and create their own music post. The backend is built with Node.js and Express, using MongoDB for the database. The frontend is a responsive single-page application built with React.',
       skills: ['Full-Stack Development', 'API Integration', 'User Authentication', 'Frontend Development'],
       tools: ['Node.js', 'Express', 'MongoDB', 'React', 'AWS'], 
-      githubUrl: 'https://github.com/aroliani/music-discovery-project', 
+      linkUrl: 'https://github.com/aroliani/music-discovery-project', 
       imageUrl: projectImage4
     },
     { 
@@ -94,7 +94,7 @@ const projectData = [
       longDescription: 'A Security Risk Management (SRM) Dashboard built with Python. This application visualizes security assessment data from MongoDB, tracks risks, and helps generate reports. It is designed to assist security teams in monitoring and managing their organizational risk posture effectively.',
       skills: ['Backend Development', 'Data Visualization', 'Risk Management'],
       tools: ['Python', 'Flask', 'MongoDB'], 
-      githubUrl: 'https://github.com/aroliani/srm-dashboard', 
+      linkUrl: 'https://github.com/aroliani/srm-dashboard', 
       imageUrl: projectImage5
     }, 
     { 
@@ -104,8 +104,9 @@ const projectData = [
       longDescription: 'This project focused on the UI/UX design for a Security Risk Management (SRM) Dashboard. The primary goal was to create an intuitive, data-rich interface for security teams to characterize systems, identify threats, analyze risks, and track mitigation progress. The design, created in Figma, emphasizes clarity and ease of use, allowing users to quickly assess risk posture through various charts and summaries.',
       skills: ['UI/UX Design', 'Dashboard Design', 'Prototyping', 'User-Centered Design'],
       tools: ['Figma'], 
-      githubUrl: 'https://www.figma.com/proto/vx7edWf7celmBjQjRSa6yA/srm---aroliani?node-id=0-1&t=l0fshorK0bMI9zZz-1', 
-      imageUrl: projectImage6 
+      linkUrl: 'https://www.figma.com/proto/vx7edWf7celmBjQjRSa6yA/srm---aroliani?node-id=0-1&t=l0fshorK0bMI9zZz-1', 
+      imageUrl: projectImage6,
+      isDesignLink: true 
     },
     { 
       id: 8, 
@@ -114,8 +115,9 @@ const projectData = [
       longDescription: 'This project focused on the UI/UX design for a conceptual platform to manage student bus schedules. The primary goal was to create a highly user-friendly interface that emphasized real-time schedule tracking and simulated an online booking process, designed with Canva.', 
       skills: ['UI/UX Design', 'Prototyping', 'User-Centered Design'], 
       tools: ['Canva'], 
-      githubUrl: 'https://www.canva.com/design/DAFzJBwEebE/CNyyTyLGzSL08b_p2XN7qA/edit?utm_content=DAFzJBwEebE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', 
-      imageUrl: projectImage7
+      linkUrl: 'https://www.canva.com/design/DAFzJBwEebE/CNyyTyLGzSL08b_p2XN7qA/edit?utm_content=DAFzJBwEebE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton', 
+      imageUrl: projectImage7,
+      isDesignLink: true 
     },
     { 
       id: 9, 
@@ -124,18 +126,20 @@ const projectData = [
       longDescription: 'Participated in a Capture The Flag competition, focusing on web exploitation and cryptography challenges. Gained practical experience in vulnerability analysis, encryption, and logical problem-solving using tools such as Burp Suite, CyberChef, and Wireshark.',
       skills: ['Web Exploitation', 'Cryptography', 'Vulnerability Analysis', 'Problem Solving', 'Digital Forensics'],
       tools: ['Burp Suite', 'CyberChef', 'Wireshark', 'Python', 'Linux', 'StegSolve', 'CyberChef', 'Hashcat', 'Base64'], 
-      githubUrl: '#', 
-      imageUrl: projectImage8
+      linkUrl: '#', 
+      imageUrl: projectImage8,
+      isDesignLink: true 
     },
     { 
       id: 10, 
       title: 'Hacker Profiling (OSINT)', 
       description: 'Led a cybersecurity project using OSINT to profile hackers, in collaboration with the Ministry of Defence.', 
-      longDescription: 'In a collaborative project with the Ministry of Defence of The Republic Of Indonesia, I led a team to conduct Open-Source Intelligence (OSINT) operations[cite: 102]. [cite_start]We successfully profiled five hackers known for targeting Indonesian digital infrastructure, simulated ethical phishing attacks, and developed strategic threat intelligence reports based on our findings.',
+      longDescription: 'In a collaborative project with the Ministry of Defence of The Republic Of Indonesia, I led a team to conduct Open-Source Intelligence (OSINT) operations. We successfully profiled five hackers known for targeting Indonesian digital infrastructure, simulated ethical phishing attacks, and developed strategic threat intelligence reports based on our findings.',
       skills: ['OSINT', 'Threat Intelligence', 'Ethical Phishing', 'Team Leadership'],
       tools: ['Ngrok', 'Seeker', 'SEToolkit', 'WhatsMyName', 'VerifyMail', 'TheHarvester', 'Whois Lookup', 'Google Dorking', 'Linux CLI', 'DefacerID'], 
-      githubUrl: '#', 
-      imageUrl: projectImage9
+      linkUrl: '#', 
+      imageUrl: projectImage9,
+      isDesignLink: true 
     }, 
 ];
 
@@ -158,7 +162,7 @@ const Projects = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-green-400 font-mono">Projects</h2>
-            <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">A brief analysis of several projects and security simulations handled.</p>
+            <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Practical implementations of software engineering and cybersecurity problem-solving</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projectData.map((project) => (
@@ -169,7 +173,17 @@ const Projects = () => {
                   <p className="text-gray-400 mb-4 flex-grow">{project.description}</p>
                   <div className="mt-auto pt-4 border-t border-gray-700/50 flex justify-end items-center gap-4">
                     <span className="text-gray-400 text-2xl" title="View Details"><FileSearchOutlined /></span>
-                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" title="View on GitHub" className="text-gray-400 hover:text-white transition-colors text-2xl z-10" onClick={(e) => e.stopPropagation()}><GithubOutlined /></a>
+                    <a 
+                      href={project.linkUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      title={project.isDesignLink ? "View Design/Details" : "View on GitHub"}
+                      className="text-gray-400 hover:text-white transition-colors text-2xl z-10"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Logic to change the icons */}
+                      {project.isDesignLink ? <ExperimentOutlined /> : <GithubOutlined />}
+                    </a>
                   </div>
                 </div>
               </div>
