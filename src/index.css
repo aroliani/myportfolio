@@ -7,13 +7,13 @@ body {
 }
 
 .nav-link-active {
-    color: #22c55e;
-    text-shadow: 0 0 8px #22c55e;
+    color: #8b5cf6; /* Violet 500 */
+    text-shadow: 0 0 8px #8b5cf6;
 }
 
 #subtitle-cursor {
     display: inline-block;
-    background-color: #38bdf8;
+    background-color: #a78bfa; /* Violet 400 */
     margin-left: 0.1em;
     width: 3px;
     animation: blink 1s infinite;
@@ -25,14 +25,14 @@ body {
 }
 
 .gemini-output {
-    @apply whitespace-pre-wrap bg-[#161b22] border-l-4 border-green-500 p-4 mt-4 rounded-md font-mono;
+    @apply whitespace-pre-wrap bg-[#161b22] border-l-4 border-violet-500 p-4 mt-4 rounded-md font-mono;
 }
 
 .loader {
     width: 24px;
     height: 24px;
     border: 3px solid #374151;
-    border-bottom-color: #22c55e;
+    border-bottom-color: #8b5cf6; /* Violet 500 */
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;

@@ -30,13 +30,13 @@ const Header = () => {
   ];
 
   const linkClasses = (href) => 
-    `hover:text-sky-400 transition-colors ${activeSection === href.substring(1) ? 'nav-link-active' : ''}`;
+    `hover:text-violet-400 transition-colors ${activeSection === href.substring(1) ? 'nav-link-active' : ''}`;
 
   return (
     <header className="bg-black/50 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-800">
       <div className="container mx-auto px-6">
         <nav className="flex justify-between items-center py-4">
-          <a href="#hero" className="text-xl font-bold text-green-400 font-mono transition-all hover:text-green-300">AROLIANI MUNTE</a>
+          <a href="#hero" className="text-xl font-bold text-violet-400 font-mono transition-all hover:text-violet-300">AROLIANI MUNTE</a>
           <div className="hidden md:flex items-center space-x-8 font-mono text-gray-400">
             {navLinks.map(link => (
               <a key={link.href} href={link.href} className={linkClasses(link.href)}>{link.label}</a>

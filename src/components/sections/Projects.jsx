@@ -21,20 +21,20 @@ const ProjectModal = ({ project, onClose, onImageClick }) => {
   if (!project) return null;
   const modalVariants = { hidden: { y: "-50px", opacity: 0 }, visible: { y: "0", opacity: 1, transition: { type: "spring", stiffness: 120 } } };
   return (
-    <motion.div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl shadow-sky-500/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative" variants={modalVariants} onClick={(e) => e.stopPropagation()}>
+    <motion.div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl shadow-violet-500/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative" variants={modalVariants} onClick={(e) => e.stopPropagation()}>
       <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl z-20"><CloseOutlined /></button>
       <img src={project.imageUrl} alt={`Preview of ${project.title}`} className="w-full h-auto aspect-video object-cover rounded-t-lg cursor-pointer transition-transform hover:scale-105" onClick={() => onImageClick(project.imageUrl)} />
       <div className="p-8">
-          <h2 className="text-3xl font-bold text-green-400 font-mono mb-2">{project.title}</h2>
+          <h2 className="text-3xl font-bold text-violet-400 font-mono mb-2">{project.title}</h2>
           <p className="text-gray-400 leading-relaxed mb-6">{project.longDescription}</p>
           <div className="border-t border-gray-700 pt-6 space-y-4">
             <div>
-              <h4 className="text-sm font-bold text-sky-400 font-mono uppercase tracking-wider mb-2">Acquired Skills</h4>
-              <div className="flex flex-wrap gap-2">{project.skills.map(skill => (<span key={skill} className="bg-sky-900/50 text-sky-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{skill}</span>))}</div>
+              <h4 className="text-sm font-bold text-purple-400 font-mono uppercase tracking-wider mb-2">Acquired Skills</h4>
+              <div className="flex flex-wrap gap-2">{project.skills.map(skill => (<span key={skill} className="bg-purple-900/50 text-purple-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{skill}</span>))}</div>
             </div>
             <div>
-              <h4 className="text-sm font-bold text-green-400 font-mono uppercase tracking-wider mb-2">Tools & Technologies</h4>
-              <div className="flex flex-wrap gap-2">{project.tools.map(tool => (<span key={tool} className="bg-green-900/50 text-green-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{tool}</span>))}</div>
+              <h4 className="text-sm font-bold text-violet-400 font-mono uppercase tracking-wider mb-2">Tools & Technologies</h4>
+              <div className="flex flex-wrap gap-2">{project.tools.map(tool => (<span key={tool} className="bg-violet-900/50 text-violet-300 text-xs font-semibold px-2.5 py-1 rounded-full font-mono">{tool}</span>))}</div>
             </div>
           </div>
       </div>
@@ -161,15 +161,15 @@ const Projects = () => {
       >
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-green-400 font-mono">Projects</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-violet-400 font-mono">Projects</h2>
             <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Practical implementations of software engineering and cybersecurity problem-solving</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projectData.map((project) => (
-              <div key={project.id} className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/20 hover:-translate-y-2 cursor-pointer group" onClick={() => handleCardClick(project)}>
+              <div key={project.id} className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/20 hover:-translate-y-2 cursor-pointer group" onClick={() => handleCardClick(project)}>
                 <div className="overflow-hidden"><img src={project.imageUrl} alt={`Preview of ${project.title}`} className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110" /></div>
                 <div className="p-6 flex flex-col flex-grow h-full">
-                  <h3 className="text-xl font-bold text-green-400 mb-2 font-mono">{project.title}</h3>
+                  <h3 className="text-xl font-bold text-violet-400 mb-2 font-mono">{project.title}</h3>
                   <p className="text-gray-400 mb-4 flex-grow">{project.description}</p>
                   <div className="mt-auto pt-4 border-t border-gray-700/50 flex justify-end items-center gap-4">
                     <span className="text-gray-400 text-2xl" title="View Details"><FileSearchOutlined /></span>

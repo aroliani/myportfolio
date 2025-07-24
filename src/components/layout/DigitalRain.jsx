@@ -9,16 +9,16 @@ const DigitalRain = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const characters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン01';
+    const characters = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789';
     const charactersArray = characters.split('');
-    const fontSize = 14;
+    const fontSize = 30;
     const columns = canvas.width / fontSize;
     const drops = Array.from({ length: Math.ceil(columns) }).fill(1);
 
     const draw = () => {
       ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#22c55e';
+      ctx.fillStyle = '#8b5cf6'; 
       ctx.font = fontSize + 'px Fira Code';
       for (let i = 0; i < drops.length; i++) {
         const text = charactersArray[Math.floor(Math.random() * charactersArray.length)];

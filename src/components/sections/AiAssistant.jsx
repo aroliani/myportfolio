@@ -132,7 +132,7 @@ const AiAssistant = () => {
     finally { setIsLoading(false); }
   };
 
-  return (
+   return (
     <motion.section 
       id="ai-assistant" 
       className="py-20 md:py-24 bg-gray-900/50"
@@ -143,13 +143,13 @@ const AiAssistant = () => {
     >
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-green-400 font-mono">Ask My AI Assistant</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-violet-400 font-mono">Ask My AI Assistant</h2>
           <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">Have a question about my profile, skills, or projects? Let my AI assistant answer it for you.</p>
         </div>
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row gap-2">
-            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="e.g., What database does Aroliani use in her web apps?" className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none text-gray-200 font-mono" />
-            <button onClick={handleAskAi} disabled={isLoading} className="bg-green-600 text-white font-bold py-2 px-3 rounded-lg hover:bg-green-700 transition-colors w-full sm:w-auto font-mono disabled:bg-gray-500">
+            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="e.g., What database does Aroliani use in her web apps?" className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-violet-500 focus:outline-none text-gray-200 font-mono" />
+            <button onClick={handleAskAi} disabled={isLoading} className="bg-violet-600 text-white font-bold py-2 px-3 rounded-lg hover:bg-violet-700 transition-colors w-full sm:w-auto font-mono disabled:bg-gray-500">
               {isLoading ? 'PROCESSING...' : 'ASK AI'}
             </button>
           </div>

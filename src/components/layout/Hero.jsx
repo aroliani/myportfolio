@@ -41,8 +41,8 @@ const Hero = () => {
     return (
         <section id="hero" className="relative text-center min-h-screen flex flex-col justify-center items-center p-6">
             <div className="container mx-auto">
-                <h1 className="text-4xl md:text-6xl font-extrabold tracking-widest text-green-400 mb-4 font-mono">WELCOME TO MY PORTFOLIO</h1>
-                <p className="text-lg md:text-xl text-sky-400 max-w-3xl mx-auto font-mono h-8">
+                <h1 className="text-4xl md:text-6xl font-extrabold tracking-widest text-violet-400 mb-4 font-mono">WELCOME TO MY PORTFOLIO</h1>
+                <p className="text-lg md:text-xl text-purple-400 max-w-3xl mx-auto font-mono h-8">
                     <span>{subtitle}</span>
                     <span id="subtitle-cursor"></span>
                 </p>
