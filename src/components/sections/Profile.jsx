@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import profileImage from '../../assets/foto.jpg';
-import cvFile from '../../assets/Aroliani Munte_CV.pdf';
+import cvFile from '../../assets/Aroliani Munte-CV.pdf';
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -58,7 +58,7 @@ const Profile = () => (
             </a>
             <a
               href={cvFile}
-              download="Aroliani Munte_CV.pdf"
+              download="Aroliani Munte-CV.pdf"
               className="inline-flex items-center gap-2 bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition-colors font-mono"
             >
               <DownloadOutlined />
