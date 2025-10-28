@@ -13,7 +13,7 @@ const DigitalRain = () => {
     const charactersArray = characters.split('');
     const fontSize = 30;
     const columns = canvas.width / fontSize;
-    const drops = Array.from({ length: Math.ceil(columns) }).fill(1);
+    const drops = Array.from({ length: Math.ceil(columns) }).fill(4);
 
     const draw = () => {
       ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
