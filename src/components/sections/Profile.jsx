@@ -1,202 +1,195 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Eye, 
-  Download, 
   GraduationCap, 
   Award, 
   Briefcase, 
+  Eye, 
+  Download, 
   ShieldCheck, 
-  Sparkles,
-  ExternalLink
+  Code, 
+  Layers
 } from 'lucide-react';
 import profileImage from '../../assets/foto.jpg';
 import cvFile from '../../assets/Aroliani Munte-CV.pdf';
 
 const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } 
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } 
   },
 };
 
 const Profile = () => {
   return (
     <motion.section
-      id="profile"
-      className="py-24 relative z-10"
+      id="about"
+      className="py-24 relative z-10 bg-ivory-light border-t border-teal-deep/5"
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}
     >
       <div className="container mx-auto px-6 max-w-6xl">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-pill text-xs font-mono text-violet-300 mb-3 border border-violet-500/20">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Discover My Journey</span>
+        
+        {/* Section Heading */}
+        <div className="mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-light text-teal-deep border border-teal-deep/10 text-xs font-mono mb-3">
+            <span>01 / Background &amp; Profile</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-            About <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">Me</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-teal-deep tracking-tight">
+            About Me<span className="text-wood">.</span>
           </h2>
-          <p className="mt-3 text-base text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Get to know my academic background, technical passion, and hands-on milestones across cybersecurity and web development.
-          </p>
         </div>
 
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        {/* Clean Editorial Bento Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Card 1: Avatar & Quick Info (4 cols) */}
+          {/* Left Column: Portrait & Fast Profile Metadata (4 cols) */}
           <div className="lg:col-span-4 flex flex-col gap-6">
-            <div className="glass-card p-6 rounded-3xl border border-white/10 flex flex-col items-center text-center relative overflow-hidden group">
-              {/* Subtle background glow */}
-              <div className="absolute -top-16 -left-16 w-36 h-36 bg-violet-600/20 rounded-full blur-2xl group-hover:bg-violet-600/30 transition-all duration-500" />
+            <div className="editorial-card p-6 rounded-3xl bg-white border border-teal-deep/10 shadow-sm flex flex-col items-center text-center">
               
-              {/* Photo Frame */}
-              <div className="relative mb-5">
-                <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden border-2 border-violet-500/30 p-1 bg-gradient-to-tr from-violet-600/30 to-indigo-500/30 shadow-xl shadow-violet-500/10 group-hover:border-violet-500/60 transition-all duration-500">
-                  <img
-                    src={profileImage}
-                    alt="Aroliani Munte"
-                    className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                {/* Active Status Badge */}
-                <div className="absolute -bottom-2 right-4 px-3 py-1 rounded-full bg-slate-900/90 border border-emerald-500/40 text-[11px] font-mono text-emerald-300 flex items-center gap-1.5 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Available for Hire
-                </div>
+              {/* Profile Photo */}
+              <div className="w-48 h-48 rounded-2xl overflow-hidden border border-teal-deep/15 mb-4 shadow-sm">
+                <img
+                  src={profileImage}
+                  alt="Aroliani Munte"
+                  className="w-full h-full object-cover"
+                />
               </div>
 
-              <h3 className="text-xl font-bold text-white font-mono">Aroliani Munte</h3>
-              <p className="text-xs text-violet-300 font-mono mt-1">Informatics Student @ President Univ</p>
+              <h3 className="text-xl font-bold text-teal-deep font-mono">
+                Aroliani Munte
+              </h3>
+              <p className="text-xs text-charcoal-muted font-mono mt-1">
+                Informatics Student @ President University
+              </p>
 
-              <div className="w-full border-t border-white/10 my-5" />
+              <div className="w-full border-t border-teal-deep/10 my-4" />
 
-              {/* Action Buttons for CV */}
-              <div className="w-full grid grid-cols-2 gap-3">
+              {/* Status Pill */}
+              <div className="w-full py-2 px-3 rounded-xl bg-teal-light text-teal-deep text-xs font-mono text-center mb-4">
+                ● Open to Internship Opportunities
+              </div>
+
+              {/* CV Action Buttons */}
+              <div className="w-full grid grid-cols-2 gap-2.5">
                 <a
                   href={cvFile}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl glass-pill text-xs font-mono text-violet-300 hover:text-white hover:bg-violet-600/20 border border-violet-500/30 transition-all"
+                  className="py-2.5 px-3 rounded-xl bg-white hover:bg-ivory-dark text-teal-deep border border-teal-deep/20 text-xs font-mono font-medium flex items-center justify-center gap-1.5 transition-all shadow-sm"
                 >
-                  <Eye className="w-3.5 h-3.5" />
+                  <Eye className="w-3.5 h-3.5 text-wood" />
                   <span>View CV</span>
                 </a>
                 <a
                   href={cvFile}
                   download="Aroliani_Munte_CV.pdf"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-mono font-semibold shadow-md shadow-violet-600/25 transition-all"
+                  className="py-2.5 px-3 rounded-xl bg-teal-deep hover:bg-teal-muted text-ivory text-xs font-mono font-medium flex items-center justify-center gap-1.5 shadow-sm transition-all"
                 >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Get PDF</span>
+                  <Download className="w-3.5 h-3.5 text-champagne" />
+                  <span>Download</span>
                 </a>
               </div>
+
             </div>
 
-            {/* Core Values / Focus Card */}
-            <div className="glass-card p-6 rounded-3xl border border-white/10 flex flex-col justify-between">
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-violet-400 mb-3 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Primary Pillars</span>
+            {/* Core Pillars */}
+            <div className="editorial-card p-6 rounded-3xl bg-white border border-teal-deep/10 shadow-sm space-y-3">
+              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-teal-deep mb-2">
+                Core Disciplines
               </h4>
-              <div className="space-y-2.5">
-                <div className="p-2.5 rounded-xl bg-slate-900/50 border border-white/5 flex items-center justify-between">
-                  <span className="text-xs text-gray-300">Cybersecurity &amp; OSINT</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-900/40 text-violet-300">Security</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-slate-900/50 border border-white/5 flex items-center justify-between">
-                  <span className="text-xs text-gray-300">Full-Stack Development</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-900/40 text-indigo-300">Engineering</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-slate-900/50 border border-white/5 flex items-center justify-between">
-                  <span className="text-xs text-gray-300">UI/UX Architecture</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-fuchsia-900/40 text-fuchsia-300">Design</span>
-                </div>
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-ivory">
+                <ShieldCheck className="w-4 h-4 text-teal-deep" />
+                <span className="text-xs text-charcoal font-medium">Cybersecurity &amp; OSINT</span>
+              </div>
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-ivory">
+                <Code className="w-4 h-4 text-wood-dark" />
+                <span className="text-xs text-charcoal font-medium">Full-Stack Web &amp; Mobile</span>
+              </div>
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-ivory">
+                <Layers className="w-4 h-4 text-dusty" />
+                <span className="text-xs text-charcoal font-medium">UI/UX Interface Design</span>
               </div>
             </div>
           </div>
 
-          {/* Card 2: Main Story & Milestones (8 cols) */}
+          {/* Right Column: Introduction Narrative & Credentials (8 cols) */}
           <div className="lg:col-span-8 flex flex-col gap-6">
-            {/* Story Card */}
-            <div className="glass-card p-6 sm:p-8 rounded-3xl border border-white/10">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400">
-                  <GraduationCap className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white">Academic &amp; Professional Profile</h3>
-                  <p className="text-xs text-gray-400">Undergraduate at President University</p>
-                </div>
-              </div>
+            
+            {/* Main Narrative Card: Full Name Introduced Naturally */}
+            <div className="editorial-card p-6 sm:p-8 rounded-3xl bg-white border border-teal-deep/10 shadow-sm">
+              <h3 className="text-xl sm:text-2xl font-bold text-teal-deep mb-4">
+                Hi, I'm Aroliani Munte.
+              </h3>
               
-              <p className="text-gray-300 text-sm sm:text-base leading-relaxed text-justify">
-                I am a sixth-semester Informatics student at <strong className="text-white">President University</strong> with an avid dedication to <span className="text-violet-300 font-medium">Cybersecurity</span>, <span className="text-indigo-300 font-medium">Full-Stack Web Development</span>, and <span className="text-fuchsia-300 font-medium">UI/UX Design</span>.
+              <p className="text-charcoal text-sm sm:text-base leading-relaxed text-justify">
+                I am an Informatics student in my sixth semester at <strong>President University</strong> with a keen technical interest in <strong>Cybersecurity</strong>, <strong>Full-Stack Development</strong>, and <strong>UI/UX Design</strong>. My nickname, <em>Aroo</em>, inspires my approach to technology: aiming for accuracy, resilience, and impactful digital solutions.
               </p>
-              <p className="text-gray-300 text-sm sm:text-base leading-relaxed mt-3 text-justify">
-                I love dissecting how software architectures operate under the hood and strengthening their resilience against vulnerabilities. In parallel, I enjoy translating user-centric ideas into sleek Figma wireframes and bringing them to life with React, Node.js, and cloud ecosystems.
+              
+              <p className="text-charcoal-muted text-sm sm:text-base leading-relaxed mt-4 text-justify">
+                Over the past three years, I have gained hands-on experience identifying and mitigating security vulnerabilities, deploying full-stack web applications with cloud integrations, and turning design prototypes in Figma into responsive, accessible interfaces.
               </p>
             </div>
 
-            {/* Milestones Grid (2 cols inside 8 cols) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Academic & Professional Highlights Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               
-              {/* KADA Fellowship */}
-              <div className="glass-card p-6 rounded-3xl border border-white/10 flex flex-col justify-between group hover:border-violet-500/30 transition-all">
+              {/* Highlight 1: KADA Fellowship */}
+              <div className="editorial-card p-6 rounded-3xl bg-white border border-teal-deep/10 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                    <div className="w-9 h-9 rounded-xl bg-teal-light flex items-center justify-center text-teal-deep">
                       <Award className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                      Scholarship
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-teal-light text-teal-deep font-semibold">
+                      Fellowship
                     </span>
                   </div>
-                  <h4 className="text-sm sm:text-base font-bold text-white mb-1.5 group-hover:text-indigo-300 transition-colors">
+                  <h4 className="text-sm sm:text-base font-bold text-teal-deep mb-1.5">
                     Korea-ASEAN Digital Academy (KADA)
                   </h4>
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Selected for an intensive international program managed by Elice, supported by AKCF, Korean MSICT, NIPA, and Indonesia's MCDA. Covers AI Ethics, Full-Stack, Cloud Deployment, and DevOps.
+                  <p className="text-xs text-charcoal-muted leading-relaxed">
+                    Selected participant in an international program supported by AKCF, Korea's MSICT, NIPA, and Indonesia's MCDA. Curriculum covers AI ethics, full-stack cloud deployment, and DevOps automation.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-2 text-[11px] font-mono text-indigo-400">
-                  <span>Advanced Software &amp; Cloud</span>
+                <div className="mt-4 pt-3 border-t border-teal-deep/5 text-[11px] font-mono text-wood-dark">
+                  Advanced Software &amp; Cloud
                 </div>
               </div>
 
-              {/* DPMI Internship */}
-              <div className="glass-card p-6 rounded-3xl border border-white/10 flex flex-col justify-between group hover:border-violet-500/30 transition-all">
+              {/* Highlight 2: DPMI President University */}
+              <div className="editorial-card p-6 rounded-3xl bg-white border border-teal-deep/10 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400">
+                    <div className="w-9 h-9 rounded-xl bg-champagne-light flex items-center justify-center text-wood-dark">
                       <Briefcase className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20">
-                      Jan - Apr 2024
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-ivory-dark text-charcoal font-semibold">
+                      Jan – Apr 2024
                     </span>
                   </div>
-                  <h4 className="text-sm sm:text-base font-bold text-white mb-1.5 group-hover:text-violet-300 transition-colors">
+                  <h4 className="text-sm sm:text-base font-bold text-teal-deep mb-1.5">
                     DPMI President University
                   </h4>
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Internship at Divisi Pengembangan &amp; Manajemen Industri. Prepared and organized 50+ institutional accreditation documents and supported internal audits according to national quality standards.
+                  <p className="text-xs text-charcoal-muted leading-relaxed">
+                    Completed internship at Divisi Pengembangan &amp; Manajemen Industri. Prepared over 50 accreditation files for internal quality assessments and supported national quality audit procedures.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-2 text-[11px] font-mono text-violet-400">
-                  <span>Quality Assurance &amp; Auditing</span>
+                <div className="mt-4 pt-3 border-t border-teal-deep/5 text-[11px] font-mono text-teal-deep">
+                  Quality Assurance &amp; Internal Audit
                 </div>
               </div>
 
             </div>
+
           </div>
 
         </div>
+
       </div>
     </motion.section>
   );

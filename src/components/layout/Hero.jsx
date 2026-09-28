@@ -1,180 +1,108 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowDown, Download, Sparkles, Shield, Code, Palette } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, ArrowDown } from 'lucide-react';
+import InteractiveBowArrow from '../hero/InteractiveBowArrow.jsx';
+import HorizontalStoryTrack from '../hero/HorizontalStoryTrack.jsx';
 import cvFile from '../../assets/Aroliani Munte-CV.pdf';
 
-const ROLES = [
-  "Cyber Security Enthusiast", 
-  "Full-Stack Developer", 
-  "UI/UX Designer",
-  "KADA Fellow Scholar"
-];
-
 const Hero = () => {
-  const [subtitle, setSubtitle] = useState('');
+  const [pullProgress, setPullProgress] = useState(0);
+  const [isLaunched, setIsLaunched] = useState(false);
 
-  useEffect(() => {
-    let roleIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let timer;
-
-    const type = () => {
-      const currentRole = ROLES[roleIndex];
-      let typeSpeed = 120;
-
-      if (isDeleting) {
-        setSubtitle(currentRole.substring(0, charIndex - 1));
-        charIndex--;
-        typeSpeed = 60;
-      } else {
-        setSubtitle(currentRole.substring(0, charIndex + 1));
-        charIndex++;
-      }
-
-      if (!isDeleting && charIndex === currentRole.length) {
-        isDeleting = true;
-        typeSpeed = 2200;
-      } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        roleIndex = (roleIndex + 1) % ROLES.length;
-      }
-
-      timer = setTimeout(type, typeSpeed);
-    };
-
-    timer = setTimeout(type, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleOpenAi = () => {
-    window.dispatchEvent(new CustomEvent('open-ai-chat', {
-      detail: { prompt: "Ceritakan ringkasan profil dan keahlian Aroliani Munte" }
-    }));
+  const handleLaunch = () => {
+    setIsLaunched(true);
+    setTimeout(() => {
+      setIsLaunched(false);
+      setPullProgress(0);
+    }, 2800);
   };
 
   return (
     <section 
       id="hero" 
-      className="relative min-h-[92vh] flex flex-col justify-center items-center px-6 pt-28 pb-16 overflow-hidden"
+      className="relative min-h-[90vh] flex flex-col justify-center px-6 pt-28 pb-16 overflow-hidden bg-ivory"
     >
-      <div className="container mx-auto max-w-4xl text-center relative z-10">
-        {/* Top Floating Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill border border-violet-500/30 text-xs sm:text-sm font-mono text-violet-300 mb-6 shadow-lg shadow-violet-500/10"
-        >
-          <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-          <span>Informatics @ President University • KADA Scholar</span>
-        </motion.div>
-
-        {/* Main Name & Title */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-4 leading-tight"
-        >
-          Hi, I'm{' '}
-          <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
-            Aroliani Munte
-          </span>
-        </motion.h1>
-
-        {/* Dynamic Typewriter Role */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="text-lg sm:text-2xl md:text-3xl text-violet-300 font-mono font-medium h-10 mb-6 flex items-center justify-center gap-1"
-        >
-          <span className="text-gray-400">&gt; </span>
-          <span>{subtitle}</span>
-          <span id="subtitle-cursor"></span>
-        </motion.div>
-
-        {/* Brief Bio Intro */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="text-gray-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
-        >
-          Passionate about building secure web architectures, ethical hacking (OSINT &amp; Pentesting), and crafting intuitive digital experiences with modern UI/UX design.
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-14"
-        >
-          <a
-            href="#projects"
-            className="group px-6 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium text-sm flex items-center gap-2 shadow-xl shadow-violet-600/30 hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all"
-          >
-            <span>Explore Projects</span>
-            <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-          </a>
-
-          <a
-            href={cvFile}
-            download="Aroliani_Munte_CV.pdf"
-            className="px-6 py-3.5 rounded-xl glass-card text-gray-200 hover:text-white font-medium text-sm flex items-center gap-2 border border-white/10 hover:border-violet-500/40 hover:scale-105 active:scale-95 transition-all"
-          >
-            <Download className="w-4 h-4 text-violet-400" />
-            <span>Download CV</span>
-          </a>
-
-          <button
-            onClick={handleOpenAi}
-            className="px-5 py-3.5 rounded-xl glass-pill text-violet-300 hover:text-violet-100 font-medium text-sm flex items-center gap-2 border border-violet-500/30 hover:bg-violet-600/20 hover:scale-105 active:scale-95 transition-all"
-          >
-            <Sparkles className="w-4 h-4 text-violet-400" />
-            <span>Ask AI Assistant</span>
-          </button>
-        </motion.div>
-
-        {/* Quick Highlights / Stats Bento Pills */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto"
-        >
-          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 text-left border border-white/[0.08]">
-            <div className="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0">
-              <Shield className="w-5 h-5" />
+      <div className="container mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          {/* Left Column: Brand, Professional Direction & Statement (6 cols) */}
+          <div className="lg:col-span-6 flex flex-col justify-center text-left">
+            
+            {/* Minimalist Signature Pill */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-light text-teal-deep border border-teal-deep/10 text-xs font-mono mb-6 w-fit">
+              <span className="w-1.5 h-1.5 rounded-full bg-wood animate-pulse" />
+              <span>Developer &amp; Security Portfolio</span>
             </div>
-            <div>
-              <h4 className="text-sm font-bold text-white font-mono">Cybersecurity</h4>
-              <p className="text-xs text-gray-400">OSINT &amp; Pentesting</p>
+
+            {/* Brand Name Hierarchy: Aroo */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-teal-deep tracking-tight mb-4">
+              Aroo<span className="text-wood">.</span>
+            </h1>
+
+            {/* Tagline */}
+            <div className="border-l-2 border-wood/40 pl-4 mb-6">
+              <p className="text-base sm:text-lg text-charcoal font-medium leading-relaxed">
+                Aiming High in Cybersecurity,<br />
+                Coding Sharp in Full-Stack,<br />
+                Crafting Delight in UI/UX.
+              </p>
             </div>
+
+            {/* Short Professional Direction Statement */}
+            <p className="text-sm sm:text-base text-charcoal-muted max-w-lg leading-relaxed mb-8">
+              Undergraduate in Informatics at President University and fellow at Korea-ASEAN Digital Academy. Committed to building secure architectures, performant web applications, and intuitive user experiences.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href="#about"
+                className="px-5 py-2.5 rounded-xl bg-teal-deep hover:bg-teal-muted text-ivory text-xs sm:text-sm font-mono font-medium flex items-center gap-2 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <span>Read Introduction</span>
+                <ArrowDown className="w-3.5 h-3.5 text-champagne" />
+              </a>
+
+              <a
+                href={cvFile}
+                download="Aroliani_Munte_CV.pdf"
+                className="px-5 py-2.5 rounded-xl bg-white hover:bg-ivory-dark text-charcoal text-xs sm:text-sm font-mono font-medium flex items-center gap-2 border border-teal-deep/15 shadow-sm transition-all hover:scale-[1.02]"
+              >
+                <Download className="w-3.5 h-3.5 text-wood" />
+                <span>Resume / CV</span>
+              </a>
+            </div>
+
           </div>
 
-          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 text-left border border-white/[0.08]">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
-              <Code className="w-5 h-5" />
+          {/* Right Column: 3D Architectural Bow & Arrow Interactive Controller (6 cols) */}
+          <div className="lg:col-span-6 flex flex-col items-center justify-center">
+            
+            {/* Bow & Arrow Controller */}
+            <div className="w-full editorial-card p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-md border border-teal-deep/10 shadow-lg">
+              
+              <div className="flex items-center justify-between mb-2 pb-3 border-b border-teal-deep/5">
+                <span className="text-[11px] font-mono text-teal-muted uppercase tracking-wider">
+                  Interactive Signature Controller
+                </span>
+                <span className="text-[11px] font-mono text-charcoal-muted">
+                  Aroo 🏹 Arrow
+                </span>
+              </div>
+
+              <InteractiveBowArrow 
+                onProgress={(p) => setPullProgress(p)}
+                onLaunch={handleLaunch}
+                isLaunched={isLaunched}
+              />
+
+              {/* Horizontal Story Progression Track reacting to slow pull */}
+              <HorizontalStoryTrack progress={pullProgress} />
+
             </div>
-            <div>
-              <h4 className="text-sm font-bold text-white font-mono">Full-Stack</h4>
-              <p className="text-xs text-gray-400">React, Node, Cloud</p>
-            </div>
+
           </div>
 
-          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 text-left border border-white/[0.08]">
-            <div className="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 shrink-0">
-              <Palette className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-white font-mono">UI/UX Design</h4>
-              <p className="text-xs text-gray-400">Figma &amp; Canva</p>
-            </div>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

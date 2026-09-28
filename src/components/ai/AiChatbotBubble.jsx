@@ -2,24 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../supabaseClient';
 import { 
-  MessageSquare, 
   X, 
   Send, 
-  Sparkles, 
   RotateCcw, 
-  Bot, 
-  User, 
-  ShieldCheck, 
-  CornerDownLeft 
+  Compass, 
+  ArrowUpRight 
 } from 'lucide-react';
 
-const profileData = `Aroliani is a sixth-semester Informatics student at President University with an interest in cybersecurity, web development, and mobile applications. Aroliani enjoys learning how systems work and exploring ways to enhance their security and functionality. Through various projects, Aroliani has developed hands-on experience in both design and programming. Aroliani is eager to continue honing her skills and taking on new challenges. Aroliani is currently advancing her software development expertise as a participant in the prestigious Korea-ASEAN Digital Academy (KADA). This initiative is managed by Elice and supported by a consortium of partners, including the ASEAN-Korea Cooperation Fund (AKCF), Korea's Ministry of Science and ICT (MSICT) and National IT Industry Promotion Agency (NIPA), and Indonesia's Ministry of Communication and Digital Affairs (MCDA). In KADA training program, they focus on a comprehensive, hands-on curriculum covering: AI Ethics & Information Security, Full-Stack Development (Web & Backend), Cloud Service Deployment, Data Analysis Fundamentals, DevOps and CI/CD Automation, UI/UX Design Principles, Collaborative Capstone Project. Aroliani's internship experience was in President University at DPMI division (January 2024 - April 2024). Aroliani organized and prepared over 50 accreditation documents for internal assessments under the Divisi Pengembangan & Manajemen Industri (DPMI) at President University, and supported internal audit processes. In Cybersecurity, Aroliani has a keen interest in OSINT, penetration testing using Linux and Wireshark, and tools like Burp Suite, Nmap, Seeker, TheHarvester, and OWASP Top Ten mitigation.`;
+const profileData = `Aroliani Munte (nickname: "Aroo") is a sixth-semester Informatics student at President University specializing in Cybersecurity (OSINT, Penetration Testing, Linux CLI, OWASP Top 10), Full-Stack Web & Mobile Development (React, Node.js, Python, Java, SQL, MongoDB, Firebase), and UI/UX Design (Figma, Canva). She is an active fellow in the Korea-ASEAN Digital Academy (KADA) supported by AKCF, Korean MSICT, NIPA, and Indonesia's MCDA. She completed an internship at President University's DPMI division focusing on internal quality audits and accreditation. Her nickname Aroo inspires her motto: Aiming High in Cybersecurity, Coding Sharp in Full-Stack, Crafting Delight in UI/UX.`;
 
 const skillsData = {
-  "Web & Mobile Development": ["HTML", "CSS", "React JS", "JavaScript", "Node.js", "Express", "PHP", "Java", "Python", "Android Studio"],
-  "Databases": ["SQL", "MongoDB", "Firebase"],
-  "Cyber Security & Tools": ["OSINT", "Penetration Testing", "Linux CLI", "Burp Suite", "Wireshark", "SEToolkit", "GitHub", "AWS"],
-  "Design & Prototyping": ["Figma", "Canva", "UI/UX Architecture"]
+  "Cybersecurity": ["OSINT", "Penetration Testing", "Linux CLI", "Burp Suite", "Wireshark", "OWASP Top Ten", "GitHub", "AWS"],
+  "Web & Mobile": ["HTML5", "CSS3", "React.js", "JavaScript", "Node.js", "Express", "PHP", "Java", "Python", "Android Studio"],
+  "Databases": ["MySQL / SQL", "MongoDB", "Firebase"],
+  "UI/UX Design": ["Figma", "Canva", "UI/UX Architecture", "Prototyping"]
 };
 
 const projectData = [
@@ -54,7 +50,7 @@ const projectData = [
     description: 'Comprehensive Figma enterprise design prototype with threat matrix layouts, data visualization cards, and color-coded risk severity scales.'
   },
   {
-    title: 'BOOSH - Bus Schedule UI/UX',
+    title: 'BOOSH - Campus Bus Schedule UI/UX',
     category: 'UI/UX Design',
     description: 'Campus mobility bus schedule application design with real-time map mockups, ticket reservation simulation, and student boarding house integration.'
   },
@@ -71,10 +67,10 @@ const projectData = [
 ];
 
 const PRESET_QUESTIONS = [
-  "Apa keahlian Aroliani di Cybersecurity?",
-  "Ceritakan proyek MedEase App",
-  "Apa saja teknologi yang dikuasai?",
-  "Bagaimana pengalaman magang di DPMI?",
+  "Summarize Aroliani's technical background",
+  "What are her cybersecurity and OSINT projects?",
+  "Tell me about the MedEase mobile app",
+  "What is the Korea-ASEAN Academy (KADA)?",
 ];
 
 const getVisitorId = () => {
@@ -86,25 +82,23 @@ const getVisitorId = () => {
   return visitorId;
 };
 
-// Formatter to render bold, bullet points, and code nicely
+// Formatter to render bold and bullet points nicely
 const formatMessageText = (text) => {
   return text.split('\n').map((line, index) => {
-    // Check for bullets
-    const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ');
-    const cleanedLine = isBullet ? line.trim().substring(2) : line;
+    const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ') || line.trim().startsWith('• ');
+    const cleanedLine = isBullet ? line.trim().replace(/^[-*•]\s+/, '') : line;
 
-    // Bold formatting **text**
     const parts = cleanedLine.split(/(\*\*.*?\*\*)/g);
     const formattedContent = parts.map((part, i) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={i} className="text-violet-300 font-semibold">{part.slice(2, -2)}</strong>;
+        return <strong key={i} className="text-teal-deep font-semibold">{part.slice(2, -2)}</strong>;
       }
       return part;
     });
 
     if (isBullet) {
       return (
-        <li key={index} className="ml-4 list-disc text-gray-200 my-0.5">
+        <li key={index} className="ml-4 list-disc text-charcoal my-0.5">
           {formattedContent}
         </li>
       );
@@ -115,12 +109,28 @@ const formatMessageText = (text) => {
     }
 
     return (
-      <p key={index} className="my-1 text-gray-200 leading-relaxed">
+      <p key={index} className="my-1 text-charcoal leading-relaxed">
         {formattedContent}
       </p>
     );
   });
 };
+
+// Clean minimal Arrow Companion Icon
+const ArrowIcon = ({ className = "w-5 h-5" }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <line x1="5" y1="19" x2="19" y2="5" />
+    <polyline points="10 5 19 5 19 14" />
+  </svg>
+);
 
 const AiChatbotBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -130,8 +140,8 @@ const AiChatbotBubble = () => {
     {
       id: 'welcome',
       sender: 'ai',
-      text: "Halo! 👋 Aku AI Assistant Aroliani Munte. Tanyakan apa saja tentang profil, pengalaman Cybersecurity, Full-Stack, atau proyek-proyek Aroliani!",
-      time: 'Baru saja'
+      text: "Hello! 👋 I am Aroo's Portfolio Guide. Feel free to ask about Aroliani's technical background, cybersecurity projects, or full-stack applications.",
+      time: 'Just now'
     }
   ]);
 
@@ -157,7 +167,6 @@ const AiChatbotBubble = () => {
     setInput('');
     setIsLoading(true);
 
-    // 1. Log question to Supabase
     const visitorId = getVisitorId();
     try {
       await supabase.from('questions').insert([
@@ -168,15 +177,12 @@ const AiChatbotBubble = () => {
         }
       ]);
     } catch (err) {
-      console.warn('Logging to Supabase skipped or failed:', err.message);
+      console.warn('Logging to Supabase skipped:', err.message);
     }
 
-    // 2. Call Gemini API
-    const portfolioContext = `You are a polite, intelligent, and articulate portfolio AI assistant for Aroliani Munte.
-Aroliani is an Informatics student at President University, specializing in Cybersecurity (OSINT, Penetration Testing, Web Security), Full-Stack Development, and UI/UX Design.
-Always answer helpfully, enthusiastically, and professionally.
-Respond in Indonesian if asked in Indonesian, or in English if asked in English.
-Keep answers structured, concise, and easy to read.
+    const portfolioContext = `You are an intelligent, articulate, and professional portfolio assistant for Aroliani Munte (Aroo).
+Aroliani is an Informatics undergraduate at President University, specializing in Cybersecurity (OSINT, Penetration Testing), Full-Stack Web Development, and UI/UX Design.
+Answer clearly, concisely, and professionally. Respond in Indonesian if asked in Indonesian, or English if asked in English.
 
 PROFILE:
 ${profileData}
@@ -188,7 +194,7 @@ PROJECTS:
 ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join('\n')}
 `;
 
-    const prompt = `${portfolioContext}\n\nUser Question: "${textToSend}"\n\nAssistant Response:`;
+    const prompt = `${portfolioContext}\n\nVisitor Question: "${textToSend}"\n\nAssistant Response:`;
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
@@ -204,7 +210,7 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
       const data = await response.json();
 
-      let reply = 'Maaf, saya tidak dapat memproses jawaban saat ini.';
+      let reply = 'I am unable to process a response at the moment. Please try again.';
       if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
         reply = data.candidates[0].content.parts[0].text;
       }
@@ -225,7 +231,7 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
         {
           id: `ai-err-${Date.now()}`,
           sender: 'ai',
-          text: '⚠️ Maaf, terjadi kendala saat menghubungkan ke layanan AI. Pastikan VITE_GEMINI_API_KEY sudah terpasang dengan benar.',
+          text: 'Unable to connect to the AI service. Please verify that VITE_GEMINI_API_KEY is configured in your .env file.',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -235,14 +241,12 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
   };
   handleSendMessageRef.current = handleSendMessage;
 
-  // Auto-scroll on new message
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen, isLoading]);
 
-  // Listen to external triggers (e.g. from hero or navbar)
   useEffect(() => {
     const handleOpenChat = (event) => {
       setIsOpen(true);
@@ -259,41 +263,36 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
       {
         id: 'welcome',
         sender: 'ai',
-        text: "Halo! 👋 Chat telah di-reset. Ada hal lain yang ingin kamu tanyakan mengenai Aroliani?",
-        time: 'Baru saja'
+        text: "Conversation reset. Feel free to ask any question about Aroliani's portfolio.",
+        time: 'Just now'
       }
     ]);
   };
 
   return (
     <>
-      {/* Floating Chat Trigger Button */}
+      {/* Floating Action Button (FAB) at Bottom-Right */}
       <div className="fixed bottom-6 right-6 z-50">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative group p-4 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-2xl shadow-violet-500/40 hover:shadow-violet-500/60 focus:outline-none transition-all duration-300 flex items-center justify-center"
-          whileHover={{ scale: 1.08 }}
+          className="relative group p-3.5 rounded-full bg-teal-deep text-ivory shadow-lg hover:shadow-xl hover:bg-teal-muted focus:outline-none transition-all duration-200 flex items-center justify-center border border-champagne/40"
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          aria-label="Buka AI Chatbot"
+          aria-label="Open Portfolio AI Guide"
         >
-          {/* Subtle pulsating aurora aura */}
-          <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-60 blur-md group-hover:opacity-100 transition duration-500 animate-pulse" />
-
-          <div className="relative z-10 flex items-center justify-center">
+          <div className="flex items-center gap-1.5">
             {isOpen ? (
-              <X className="w-6 h-6 text-white transition-transform duration-300 rotate-90 group-hover:rotate-0" />
+              <X className="w-5 h-5 text-ivory" />
             ) : (
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-violet-200 animate-bounce" />
-                <span className="hidden sm:inline-block font-mono text-sm font-semibold pr-1">
-                  Ask AI
+              <>
+                <ArrowIcon className="w-5 h-5 text-champagne" />
+                <span className="hidden sm:inline-block font-mono text-xs font-semibold pr-1 text-ivory">
+                  Guide
                 </span>
-              </div>
+              </>
             )}
           </div>
-
-          {/* Active online badge */}
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full" />
+          <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-emerald-500 border border-white rounded-full" />
         </motion.button>
       </div>
 
@@ -301,26 +300,24 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.92 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.92 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 280 }}
-            className="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-32px)] sm:w-[420px] max-h-[580px] h-[540px] z-50 rounded-2xl flex flex-col overflow-hidden glass-panel border border-violet-500/20 shadow-2xl shadow-black/80"
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-20 right-4 sm:right-6 w-[calc(100vw-32px)] sm:w-[400px] max-h-[560px] h-[520px] z-50 rounded-3xl flex flex-col overflow-hidden bg-white border border-teal-deep/15 shadow-2xl"
           >
             {/* Header */}
-            <div className="p-4 bg-slate-900/80 border-b border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-                  <Bot className="w-6 h-6 text-white" />
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-slate-900 rounded-full" />
+            <div className="p-4 bg-teal-deep text-ivory border-b border-teal-deep/10 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-teal-muted flex items-center justify-center text-champagne">
+                  <ArrowIcon className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-mono text-sm font-bold text-white flex items-center gap-1.5">
-                    Aroliani AI Assistant
-                    <ShieldCheck className="w-4 h-4 text-violet-400" />
+                  <h3 className="font-mono text-xs font-bold tracking-wide text-ivory">
+                    Aroo Portfolio Guide
                   </h3>
-                  <p className="text-xs text-gray-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-ping" />
+                  <p className="text-[10px] text-ivory-muted font-mono flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
                     Online • Gemini 2.0 Flash
                   </p>
                 </div>
@@ -329,15 +326,15 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
               <div className="flex items-center gap-1">
                 <button
                   onClick={resetChat}
-                  title="Reset Percakapan"
-                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  title="Reset Conversation"
+                  className="p-1.5 text-ivory-muted hover:text-ivory rounded-lg transition-colors"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  title="Tutup Chat"
-                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  title="Close Guide"
+                  className="p-1.5 text-ivory-muted hover:text-ivory rounded-lg transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -345,26 +342,26 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
             </div>
 
             {/* Chat Body */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-ivory-light">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl p-3.5 text-sm ${
+                    className={`max-w-[85%] rounded-2xl p-3 text-xs sm:text-sm ${
                       msg.sender === 'user'
-                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/20 rounded-br-none'
-                        : 'glass-card border border-white/10 text-gray-200 rounded-bl-none shadow-md'
+                        ? 'bg-teal-deep text-ivory rounded-br-none shadow-sm'
+                        : 'bg-white border border-teal-deep/10 text-charcoal rounded-bl-none shadow-sm'
                     }`}
                   >
                     {msg.sender === 'ai' ? (
-                      <div className="text-xs sm:text-sm">{formatMessageText(msg.text)}</div>
+                      <div>{formatMessageText(msg.text)}</div>
                     ) : (
                       <p className="whitespace-pre-wrap">{msg.text}</p>
                     )}
                   </div>
-                  <span className="text-[10px] text-gray-400 mt-1 px-1 font-mono">
+                  <span className="text-[9px] text-charcoal-muted mt-1 px-1 font-mono">
                     {msg.time}
                   </span>
                 </div>
@@ -372,15 +369,15 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
 
               {/* Typing indicator */}
               {isLoading && (
-                <div className="flex items-center gap-2 text-violet-400 text-xs font-mono p-2">
-                  <div className="w-8 h-8 rounded-lg bg-violet-600/20 border border-violet-500/30 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 animate-spin text-violet-300" />
+                <div className="flex items-center gap-2 text-teal-deep text-xs font-mono p-2">
+                  <div className="w-6 h-6 rounded-lg bg-teal-light flex items-center justify-center">
+                    <ArrowIcon className="w-3.5 h-3.5 text-teal-deep animate-pulse" />
                   </div>
-                  <div className="flex items-center gap-1.5 bg-slate-800/60 px-3 py-2 rounded-xl border border-white/5">
-                    <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                    <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                    <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" />
-                    <span className="text-gray-400 ml-1">Mengetik...</span>
+                  <div className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-teal-deep/10 shadow-sm">
+                    <span className="w-1.5 h-1.5 bg-teal-deep rounded-full animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 bg-teal-deep rounded-full animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 bg-teal-deep rounded-full animate-bounce" />
+                    <span className="text-charcoal-muted text-[11px] ml-1">Thinking...</span>
                   </div>
                 </div>
               )}
@@ -390,17 +387,16 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
 
             {/* Quick Prompt Suggestions */}
             {messages.length <= 3 && !isLoading && (
-              <div className="px-4 pb-2">
-                <p className="text-[11px] font-mono text-gray-400 mb-1.5 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-violet-400" />
-                  Pertanyaan Populer:
+              <div className="px-4 py-2 bg-white border-t border-teal-deep/5">
+                <p className="text-[10px] font-mono text-charcoal-muted mb-1.5">
+                  Suggested topics:
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1">
                   {PRESET_QUESTIONS.map((q, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(q)}
-                      className="text-[11px] px-2.5 py-1 rounded-full bg-violet-500/10 hover:bg-violet-500/20 text-violet-300 border border-violet-500/25 transition-all text-left truncate max-w-full"
+                      className="text-[10px] px-2.5 py-1 rounded-full bg-ivory text-teal-deep border border-teal-deep/10 hover:bg-teal-light transition-all text-left truncate max-w-full font-mono"
                     >
                       {q}
                     </button>
@@ -409,8 +405,8 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
               </div>
             )}
 
-            {/* Footer / Input Area */}
-            <div className="p-3 bg-slate-900/90 border-t border-white/10">
+            {/* Footer Input Area */}
+            <div className="p-3 bg-white border-t border-teal-deep/10">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -422,23 +418,18 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Tanyakan sesuatu tentang Aroliani..."
+                  placeholder="Ask a question about Aroliani..."
                   disabled={isLoading}
-                  className="flex-1 py-2.5 px-3.5 text-xs sm:text-sm rounded-xl glass-input text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
+                  className="flex-1 py-2 px-3 text-xs rounded-xl bg-ivory border border-teal-deep/15 text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-teal-deep"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="p-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md shadow-violet-600/30 flex items-center justify-center"
+                  className="p-2 rounded-xl bg-teal-deep hover:bg-teal-muted text-ivory disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3.5 h-3.5 text-champagne" />
                 </button>
               </form>
-              <div className="text-[10px] text-gray-400 text-center mt-2 flex items-center justify-center gap-1">
-                <span>Tekan</span>
-                <kbd className="px-1 py-0.5 text-[9px] bg-slate-800 border border-gray-700 rounded text-gray-400">Enter</kbd>
-                <span>untuk mengirim</span>
-              </div>
             </div>
           </motion.div>
         )}
