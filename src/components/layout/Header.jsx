@@ -18,6 +18,7 @@ const Header = () => {
     { href: '#about', label: 'About' },
     { href: '#projects', label: 'Projects' },
     { href: '#skills', label: 'Skills' },
+    { href: '#experience', label: 'Experience' },
     { href: '#contact', label: 'Contact' },
   ];
 
@@ -30,52 +31,60 @@ const Header = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled 
-          ? 'py-3.5 bg-ivory/90 backdrop-blur-lg border-b border-teal-deep/10 shadow-sm' 
-          : 'py-5 bg-transparent'
+          ? 'py-3 bg-ivory/95 backdrop-blur-md border-b border-teal-deep/10 shadow-sm' 
+          : 'py-4 bg-gradient-to-b from-black/35 via-black/15 to-transparent'
       }`}
     >
-      <div className="container mx-auto px-6 max-w-6xl">
+      <div className="container mx-auto px-6 max-w-7xl">
         <nav className="flex justify-between items-center">
           
-          {/* Logo / Brand Name Hierarchy: Aroo */}
+          {/* Logo / Brand: Compass Arrow + Aroo. */}
           <a 
             href="#hero" 
-            className="group flex items-center gap-2 font-mono text-lg font-extrabold tracking-tight text-teal-deep"
+            className="group flex items-center gap-2.5 font-serif text-xl font-bold tracking-tight text-white drop-shadow-sm"
           >
-            <span className="w-7 h-7 rounded-lg bg-teal-deep text-champagne-soft flex items-center justify-center text-xs font-bold shadow-sm">
-              A
+            <span className="w-8 h-8 rounded-full bg-teal-deep/80 backdrop-blur-sm border border-champagne/40 text-champagne flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform">
+              <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" strokeOpacity="0.4" />
+                <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="currentColor" fillOpacity="0.25" />
+                <path d="M7 17 L17 7 M17 7 H11 M17 7 V13" stroke="currentColor" />
+              </svg>
             </span>
             <span className="tracking-wide">
-              Aroo<span className="text-wood">.</span>
+              Aroo<span className="text-champagne">.</span>
             </span>
           </a>
 
           {/* Desktop Nav Items */}
-          <div className="hidden md:flex items-center gap-6 text-xs font-mono font-medium text-charcoal-soft">
+          <div className="hidden md:flex items-center gap-7 text-xs font-mono font-medium">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="hover:text-teal-deep transition-colors"
+                className="text-ivory/90 hover:text-champagne drop-shadow transition-colors"
               >
                 {link.label}
               </a>
             ))}
           </div>
 
-          {/* Right Action: Recruiter Fast Badge & AI Guide Trigger */}
+          {/* Right Action: Let's Connect Button & AI Guide Trigger */}
           <div className="hidden md:flex items-center gap-3">
-            <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-teal-light text-teal-deep border border-teal-deep/10">
-              ● Available for Opportunities
-            </span>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono font-medium text-ivory bg-teal-deep hover:bg-teal-muted border border-champagne/30 shadow-md transition-all group"
+            >
+              <span>Let's Connect</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-champagne group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
 
             <button
               onClick={handleOpenAi}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium text-charcoal bg-white border border-teal-deep/15 hover:border-wood transition-all shadow-sm"
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/25 text-ivory transition-all shadow-sm"
               title="Open AI Guide"
+              aria-label="Open AI Guide"
             >
-              <Compass className="w-3.5 h-3.5 text-wood" />
-              <span>AI Guide</span>
+              <Compass className="w-4 h-4 text-champagne" />
             </button>
           </div>
 

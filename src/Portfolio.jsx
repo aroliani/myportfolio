@@ -4,6 +4,7 @@ import Hero from './components/layout/Hero.jsx';
 import Profile from './components/sections/Profile.jsx';
 import Projects from './components/sections/Projects.jsx';
 import Skills from './components/sections/Skills.jsx';
+import Experience from './components/sections/Experience.jsx';
 import Contact from './components/sections/Contact.jsx';
 import Footer from './components/layout/Footer.jsx';
 import AiChatbotBubble from './components/ai/AiChatbotBubble.jsx';
@@ -17,6 +18,7 @@ function Portfolio() {
         <Profile />
         <Projects />
         <Skills />
+        <Experience />
         <Contact />
       </main>
       <Footer />
