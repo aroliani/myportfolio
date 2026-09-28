@@ -8,9 +8,10 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 25);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -29,10 +30,10 @@ const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
           ? 'py-3 bg-ivory/95 backdrop-blur-md border-b border-teal-deep/10 shadow-sm' 
-          : 'py-4 bg-gradient-to-b from-black/35 via-black/15 to-transparent'
+          : 'py-4.5 bg-gradient-to-b from-black/60 via-black/25 to-transparent'
       }`}
     >
       <div className="container mx-auto px-6 max-w-7xl">
@@ -41,9 +42,11 @@ const Header = () => {
           {/* Logo / Brand: Compass Arrow + Aroo. */}
           <a 
             href="#hero" 
-            className="group flex items-center gap-2.5 font-serif text-xl font-bold tracking-tight text-white drop-shadow-sm"
+            className={`group flex items-center gap-2.5 font-serif text-xl font-bold tracking-tight transition-colors ${
+              scrolled ? 'text-teal-deep' : 'text-ivory drop-shadow-sm'
+            }`}
           >
-            <span className="w-8 h-8 rounded-full bg-teal-deep/80 backdrop-blur-sm border border-champagne/40 text-champagne flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform">
+            <span className="w-8 h-8 rounded-full bg-teal-deep text-champagne flex items-center justify-center text-sm shadow-md border border-champagne/40 group-hover:scale-105 transition-transform">
               <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" strokeOpacity="0.4" />
                 <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="currentColor" fillOpacity="0.25" />
@@ -61,7 +64,11 @@ const Header = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-ivory/90 hover:text-champagne drop-shadow transition-colors"
+                className={`transition-colors ${
+                  scrolled 
+                    ? 'text-charcoal hover:text-teal-deep font-semibold' 
+                    : 'text-ivory/90 hover:text-champagne drop-shadow'
+                }`}
               >
                 {link.label}
               </a>
@@ -80,7 +87,11 @@ const Header = () => {
 
             <button
               onClick={handleOpenAi}
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/25 text-ivory transition-all shadow-sm"
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
+                scrolled
+                  ? 'bg-white hover:bg-teal-light text-teal-deep border border-teal-deep/15'
+                  : 'bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/25 text-ivory'
+              }`}
               title="Open AI Guide"
               aria-label="Open AI Guide"
             >
@@ -92,14 +103,22 @@ const Header = () => {
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={handleOpenAi}
-              className="p-2 rounded-xl text-teal-deep bg-white border border-teal-deep/15"
+              className={`p-2 rounded-xl border ${
+                scrolled
+                  ? 'text-teal-deep bg-white border-teal-deep/15'
+                  : 'text-ivory bg-black/40 border-white/20'
+              }`}
               aria-label="Tanya AI"
             >
-              <Compass className="w-4 h-4 text-wood" />
+              <Compass className="w-4 h-4 text-champagne" />
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-charcoal hover:text-teal-deep bg-white border border-teal-deep/15 rounded-xl focus:outline-none"
+              className={`p-2 rounded-xl focus:outline-none border ${
+                scrolled
+                  ? 'text-charcoal hover:text-teal-deep bg-white border-teal-deep/15'
+                  : 'text-ivory hover:text-champagne bg-black/40 border-white/20'
+              }`}
               aria-label="Menu"
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

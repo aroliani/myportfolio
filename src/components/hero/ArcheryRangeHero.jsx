@@ -1,563 +1,646 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown, ArrowRight, Crosshair, Sparkles } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import heroBgImage from '../../assets/hero-archery-range.jpg';
-import cvFile from '../../assets/Aroliani Munte-CV.pdf';
 import { playDrawSound, playReleaseSound, playImpactSound } from '../../utils/archeryAudio';
 
-// The 5 Targets from the reference design, precisely aligned to the background scene
+// The 5 Targets in 1376 x 768 coordinate space
 const TARGETS = [
   {
     id: 'about',
     label: 'ABOUT',
-    sublabel: 'Background & Bio',
+    x: 700,
+    y: 500,
     xPercent: 50.9,
     yPercent: 65.1,
-    distanceLabel: '40m',
-    description: 'Informatics @ President University · KADA Fellow',
   },
   {
     id: 'projects',
     label: 'PROJECTS',
-    sublabel: 'Curated Works',
+    x: 850,
+    y: 490,
     xPercent: 61.8,
     yPercent: 63.8,
-    distanceLabel: '75m',
-    description: 'Full-Stack Apps · Security Labs · UI/UX Showcase',
   },
   {
     id: 'skills',
     label: 'SKILLS',
-    sublabel: 'Tech Stack',
+    x: 1010,
+    y: 510,
     xPercent: 73.4,
     yPercent: 66.4,
-    distanceLabel: '65m',
-    description: 'Cybersecurity · React · Node.js · PostgreSQL',
   },
   {
     id: 'experience',
     label: 'EXPERIENCE',
-    sublabel: 'Track Record',
+    x: 1155,
+    y: 520,
     xPercent: 83.9,
     yPercent: 67.7,
-    distanceLabel: '50m',
-    description: 'KADA Fellowship · DPMI QA & Internal Audit Intern',
   },
   {
     id: 'contact',
     label: 'CONTACT',
-    sublabel: 'Get In Touch',
+    x: 1295,
+    y: 525,
     xPercent: 94.1,
     yPercent: 68.4,
-    distanceLabel: '35m',
-    description: 'Open to Software Engineering & Security Roles',
   },
 ];
+
+// Coordinate geometry constants in 1376x768 SVG space
+const BOW_SHELF = { x: 465, y: 460 };
+const REST_TIP_TOP = { x: 420, y: 105 };
+const REST_TIP_BOTTOM = { x: 440, y: 720 };
+const ARROW_LENGTH = 340;
+const NOCK_OFFSET = 205; // distance from shelf back to nock at rest
+const MAX_PULL = 135; // maximum pixels of string draw
 
 const ArcheryRangeHero = () => {
   const containerRef = useRef(null);
 
-  // Active target being aimed at
+  // Active target selection
   const [activeTarget, setActiveTarget] = useState(TARGETS[1]); // Default to PROJECTS
-  const [aimAngle, setAimAngle] = useState(12);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  // Pull interaction state (0 to 1)
-  const [pullProgress, setPullProgress] = useState(0);
+  // Pull interaction state
+  const [pullDistance, setPullDistance] = useState(0);
   const [isPulling, setIsPulling] = useState(false);
-  const pullStartPos = useRef({ x: 0, y: 0 });
-  const lastSoundTime = useRef(0);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+  const lastMoveRef = useRef({ pull: 0, time: 0 });
+  const releaseVelocityRef = useRef(0);
+  const lastSoundTimeRef = useRef(0);
+  const springAnimFrameRef = useRef(null);
 
   // Flight & Impact state
-  const [flyingArrow, setFlyingArrow] = useState(null);
+  const [isFlying, setIsFlying] = useState(false);
+  const [flightProgress, setFlightProgress] = useState(0);
   const [hitTargetId, setHitTargetId] = useState(null);
-  const [impactPulse, setImpactPulse] = useState(null);
+  const flightAnimRef = useRef(null);
+  const flightStateRef = useRef({ startX: 0, startY: 0, target: TARGETS[1] });
 
-  // Calculate mouse aim across the target field
-  const handleMouseMove = useCallback((e) => {
-    if (!containerRef.current || flyingArrow || isPulling) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const mouseXPercent = ((e.clientX - rect.left) / rect.width) * 100;
-    const mouseYPercent = ((e.clientY - rect.top) / rect.height) * 100;
+  // Calculate unit aim vector for current active target
+  const targetDx = activeTarget.x - BOW_SHELF.x;
+  const targetDy = activeTarget.y - BOW_SHELF.y;
+  const targetDist = Math.hypot(targetDx, targetDy);
+  const unitX = targetDx / targetDist;
+  const unitY = targetDy / targetDist;
+  const aimAngleDeg = Math.atan2(unitY, unitX) * (180 / Math.PI);
 
-    // Bow origin in the scene (left foreground where the arrow rests)
-    const bowXPercent = 28;
-    const bowYPercent = 64;
+  // Calculated arrow coordinates
+  const pullRatio = Math.min(1, pullDistance / MAX_PULL);
 
-    // Calculate aiming angle
-    const deltaX = mouseXPercent - bowXPercent;
-    const deltaY = mouseYPercent - bowYPercent;
-    const deg = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-    setAimAngle(deg);
+  // Arrow resting positions
+  const restNockX = BOW_SHELF.x - unitX * NOCK_OFFSET;
+  const restNockY = BOW_SHELF.y - unitY * NOCK_OFFSET;
+  const restTipX = restNockX + unitX * ARROW_LENGTH;
+  const restTipY = restNockY + unitY * ARROW_LENGTH;
 
-    // Find the closest target to cursor X
-    let closestTarget = TARGETS[0];
-    let minDistance = 999;
+  // Drawn arrow positions
+  const currentNockX = restNockX - unitX * pullDistance;
+  const currentNockY = restNockY - unitY * pullDistance;
+  const currentTipX = restTipX - unitX * pullDistance;
+  const currentTipY = restTipY - unitY * pullDistance;
 
-    TARGETS.forEach((t) => {
-      const dist = Math.hypot(t.xPercent - mouseXPercent, t.yPercent - mouseYPercent);
-      if (dist < minDistance) {
-        minDistance = dist;
-        closestTarget = t;
+  // Dynamic Bow Limbs deformation
+  const tipTopFlexX = REST_TIP_TOP.x - unitX * (pullRatio * 18);
+  const tipTopFlexY = REST_TIP_TOP.y - unitY * (pullRatio * 12);
+  const tipBottomFlexX = REST_TIP_BOTTOM.x - unitX * (pullRatio * 18);
+  const tipBottomFlexY = REST_TIP_BOTTOM.y - unitY * (pullRatio * 12);
+
+  // Smooth Spring Back when released without enough power
+  const springArrowBack = useCallback(() => {
+    if (springAnimFrameRef.current) cancelAnimationFrame(springAnimFrameRef.current);
+    const startPull = pullDistance;
+    const startTime = performance.now();
+    const duration = 240;
+
+    const step = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      // Spring cubic ease out
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const val = startPull * (1 - ease);
+      setPullDistance(val);
+
+      if (progress < 1) {
+        springAnimFrameRef.current = requestAnimationFrame(step);
+      } else {
+        setPullDistance(0);
       }
-    });
+    };
+    springAnimFrameRef.current = requestAnimationFrame(step);
+  }, [pullDistance]);
 
-    if (minDistance < 35) {
-      setActiveTarget(closestTarget);
-    }
-  }, [flyingArrow, isPulling]);
+  // Execute actual Arrow Launch and Flight
+  const launchArrow = useCallback((target, currentPullRatio, velocity) => {
+    if (springAnimFrameRef.current) cancelAnimationFrame(springAnimFrameRef.current);
+    if (flightAnimRef.current) cancelAnimationFrame(flightAnimRef.current);
 
-  // Pull start handler (mouse or touch)
-  const handleStartPull = (clientX, clientY) => {
-    if (flyingArrow) return;
+    // Instantly snap string back to rest
+    setPullDistance(0);
+
+    // Calculate flight speed: higher velocity / pull = faster shot
+    const baseDuration = 320;
+    const speedBonus = Math.max(0, Math.min(100, velocity * 70));
+    const flightDuration = Math.max(220, baseDuration - speedBonus);
+
+    // Play release whoosh
+    playReleaseSound();
+
+    flightStateRef.current = {
+      startX: currentTipX,
+      startY: currentTipY,
+      target: target,
+    };
+
+    setIsFlying(true);
+    setFlightProgress(0);
+
+    const startTime = performance.now();
+
+    const flightStep = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / flightDuration);
+      // Realistic acceleration curve
+      const easedT = Math.pow(t, 1.25);
+      setFlightProgress(easedT);
+
+      if (t < 1) {
+        flightAnimRef.current = requestAnimationFrame(flightStep);
+      } else {
+        // IMPACT!
+        setIsFlying(false);
+        setFlightProgress(1);
+        playImpactSound();
+        setHitTargetId(target.id);
+
+        // Smooth transition to section after brief impact recoil
+        setTimeout(() => {
+          const elem = document.getElementById(target.id);
+          if (elem) {
+            elem.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 260);
+
+        // Reset hit effect after 2.2s
+        setTimeout(() => {
+          setHitTargetId(null);
+        }, 2200);
+      }
+    };
+
+    flightAnimRef.current = requestAnimationFrame(flightStep);
+  }, [currentTipX, currentTipY]);
+
+  // Pointer Down on the Arrow (Actual Grab)
+  const handleArrowPointerDown = (e) => {
+    if (isFlying) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Cancel any active spring back
+    if (springAnimFrameRef.current) cancelAnimationFrame(springAnimFrameRef.current);
+
     setIsPulling(true);
-    pullStartPos.current = { x: clientX, y: clientY };
+    setHasInteracted(true);
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
+    lastMoveRef.current = { pull: pullDistance, time: performance.now() };
+    releaseVelocityRef.current = 0;
     playDrawSound(0.2);
   };
 
-  // Pull drag handler
-  const handleMovePull = useCallback((clientX, clientY) => {
-    if (!isPulling || flyingArrow) return;
-    const deltaX = pullStartPos.current.x - clientX;
-    const deltaY = clientY - pullStartPos.current.y;
-    // Pull backwards (to the left and down) builds tension
-    const totalPull = Math.max(0, deltaY * 0.7 + deltaX * 0.5);
-    const progress = Math.max(0, Math.min(1, totalPull / 110));
-    setPullProgress(progress);
-
-    // Subtle audio tension tick
-    const now = Date.now();
-    if (now - lastSoundTime.current > 140) {
-      playDrawSound(progress);
-      lastSoundTime.current = now;
-    }
-  }, [isPulling, flyingArrow]);
-
-  // Execute arrow shot towards targeted section
-  const executeShot = useCallback((target) => {
-    const targetToHit = target || activeTarget || TARGETS[1];
-    if (flyingArrow || !targetToHit) return;
-
-    // Trigger flight whoosh audio
-    playReleaseSound();
-
-    setFlyingArrow({
-      targetId: targetToHit.id,
-      targetX: targetToHit.xPercent,
-      targetY: targetToHit.yPercent,
-      startX: 28,
-      startY: 64,
-    });
-
-    setIsPulling(false);
-    setPullProgress(0);
-
-    // Impact timing
-    setTimeout(() => {
-      // Play crisp impact thud
-      playImpactSound();
-
-      setHitTargetId(targetToHit.id);
-      setImpactPulse({
-        x: targetToHit.xPercent,
-        y: targetToHit.yPercent,
-      });
-
-      // Smooth scroll to destination section after brief impact celebration
-      setTimeout(() => {
-        const elem = document.getElementById(targetToHit.id);
-        if (elem) {
-          elem.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 420);
-
-      // Reset arrow and impact state
-      setTimeout(() => {
-        setFlyingArrow(null);
-        setHitTargetId(null);
-        setImpactPulse(null);
-      }, 2400);
-    }, 420);
-  }, [activeTarget, flyingArrow]);
-
-  // Pull end handler
-  const handleEndPull = useCallback(() => {
-    if (!isPulling) return;
-    setIsPulling(false);
-
-    if (pullProgress > 0.32) {
-      executeShot(activeTarget);
-    } else {
-      // Release without enough power: snap back gently
-      setPullProgress(0);
-    }
-  }, [isPulling, pullProgress, executeShot, activeTarget]);
-
-  // Direct target click
+  // Direct click on target (for immediate recruiter access)
   const handleTargetClick = (target) => {
+    if (isFlying || isPulling) return;
     setActiveTarget(target);
-    executeShot(target);
+    launchArrow(target, 0.8, 1.2);
   };
 
-  // Window listeners for smooth drag & drop
+  // Global Pointer Listeners for Physical Dragging & Aiming
   useEffect(() => {
-    const onMove = (e) => {
-      handleMouseMove(e);
+    const onPointerMove = (e) => {
       if (isPulling) {
-        handleMovePull(e.clientX, e.clientY);
-      }
-    };
-    const onUp = () => {
-      if (isPulling) {
-        handleEndPull();
-      }
-    };
-    const onTouchMove = (e) => {
-      if (isPulling && e.touches.length > 0) {
-        handleMovePull(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    };
-    const onTouchEnd = () => {
-      if (isPulling) {
-        handleEndPull();
+        // 1. Calculate physical pull distance
+        const dx = e.clientX - dragStartRef.current.x;
+        const dy = e.clientY - dragStartRef.current.y;
+
+        // Project pointer displacement along the negative aim vector
+        const pullAlongVector = dx * (-unitX) + dy * (-unitY);
+        // Also natural backward drag (left/down)
+        const naturalDrag = -dx * 0.75 + dy * 0.65;
+        const effectivePull = Math.max(0, Math.max(pullAlongVector, naturalDrag));
+
+        const clamped = Math.min(MAX_PULL, effectivePull);
+        setPullDistance(clamped);
+
+        // Track velocity
+        const now = performance.now();
+        const dt = now - lastMoveRef.current.time;
+        if (dt > 12) {
+          const v = (clamped - lastMoveRef.current.pull) / dt;
+          releaseVelocityRef.current = v;
+          lastMoveRef.current = { pull: clamped, time: now };
+        }
+
+        // Tactile sound tick
+        if (now - lastSoundTimeRef.current > 140) {
+          playDrawSound(clamped / MAX_PULL);
+          lastSoundTimeRef.current = now;
+        }
+      } else if (!isFlying) {
+        // 2. Aiming: hover across the target range to highlight closest target
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const mouseXPercent = ((e.clientX - rect.left) / rect.width) * 100;
+
+        let closest = TARGETS[0];
+        let minDiff = 999;
+        TARGETS.forEach((t) => {
+          const diff = Math.abs(t.xPercent - mouseXPercent);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closest = t;
+          }
+        });
+
+        if (minDiff < 22) {
+          setActiveTarget(closest);
+        }
       }
     };
 
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
-    window.addEventListener('touchend', onTouchEnd);
+    const onPointerUp = () => {
+      if (!isPulling) return;
+      setIsPulling(false);
+
+      const ratio = pullDistance / MAX_PULL;
+      if (ratio >= 0.28) {
+        // Threshold met: FIRE!
+        launchArrow(activeTarget, ratio, releaseVelocityRef.current);
+      } else {
+        // Threshold not met: spring back gently
+        springArrowBack();
+      }
+    };
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
 
     return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
+      if (springAnimFrameRef.current) cancelAnimationFrame(springAnimFrameRef.current);
+      if (flightAnimRef.current) cancelAnimationFrame(flightAnimRef.current);
     };
-  }, [isPulling, handleMouseMove, handleMovePull, handleEndPull]);
+  }, [isPulling, pullDistance, unitX, unitY, activeTarget, isFlying, launchArrow, springArrowBack]);
+
+  // Flying Arrow Projectile Coordinates (during flight)
+  const currentFlightTarget = flightStateRef.current.target || activeTarget;
+  const flightStartX = flightStateRef.current.startX || restTipX;
+  const flightStartY = flightStateRef.current.startY || restTipY;
+  const flyingTipX = flightStartX + (currentFlightTarget.x - flightStartX) * flightProgress;
+  const flyingTipY = flightStartY + (currentFlightTarget.y - flightStartY) * flightProgress;
+  const flyingScale = Math.max(0.2, 1.0 - flightProgress * 0.78);
+  const flyingNockX = flyingTipX - unitX * (ARROW_LENGTH * flyingScale);
+  const flyingNockY = flyingTipY - unitY * (ARROW_LENGTH * flyingScale);
 
   return (
     <section
       ref={containerRef}
       id="hero"
-      className="relative w-full h-screen min-h-[720px] max-h-[1100px] overflow-hidden select-none bg-[#0c1e22]"
+      className="relative w-full h-screen min-h-[700px] max-h-[1100px] overflow-hidden select-none bg-[#091b1f]"
     >
       {/* ========================================================================= */}
-      {/* 1. CINEMATIC 3D BACKGROUND SCENE WITH DYNAMIC CAMERA ZOOM ON PULL */}
+      {/* 1. CINEMATIC BACKGROUND SCENE WITH SMOOTH CAMERA ZOOM PROPORTIONAL TO PULL */}
       {/* ========================================================================= */}
-      <motion.div
-        className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none"
+      <div
+        className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none origin-center"
         style={{
           backgroundImage: `url(${heroBgImage})`,
-          backgroundPosition: 'center 46%',
-        }}
-        animate={{
-          // Camera zoom effect when pulling (Storyboard 02: "The target comes closer as you pull")
-          scale: isPulling ? 1 + pullProgress * 0.42 : 1,
-          transformOrigin: activeTarget
-            ? `${activeTarget.xPercent}% ${activeTarget.yPercent}%`
-            : '65% 65%',
-        }}
-        transition={{
-          scale: { duration: isPulling ? 0.04 : 0.4, ease: 'easeOut' },
-          transformOrigin: { duration: 0.35 },
+          backgroundPosition: 'center center',
+          transformOrigin: `${activeTarget.xPercent}% ${activeTarget.yPercent}%`,
+          transform: `scale(${1 + pullRatio * 0.42})`,
+          transition: isPulling ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       />
 
-      {/* Atmospheric Vignette & Sunlight Overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/60 via-black/20 to-black/25 mix-blend-multiply" />
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+      {/* Natural Atmospheric Contrast Overlay (Ensures Left Text is Ultra Legible) */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/65 via-black/20 to-black/25 mix-blend-multiply" />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/55 via-transparent to-black/35" />
 
       {/* ========================================================================= */}
-      {/* 2. TOP-LEFT EDITORIAL BRAND & VALUE PROPOSITION OVERLAY */}
+      {/* 2. CONCISE BRAND TYPOGRAPHY (LEFT OVERLAY) */}
       {/* ========================================================================= */}
-      <div className="relative z-30 pt-24 sm:pt-28 md:pt-32 px-6 sm:px-12 max-w-7xl mx-auto w-full pointer-events-none">
+      <div className="relative z-20 pt-28 sm:pt-32 px-6 sm:px-12 max-w-7xl mx-auto w-full pointer-events-none">
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="pointer-events-auto max-w-lg"
         >
-          {/* Brand Name */}
+          {/* Brand */}
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif font-black text-ivory tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.7)]">
             Aroo<span className="text-champagne">.</span>
           </h1>
 
-          {/* Tagline */}
+          {/* Value Proposition */}
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-ivory/95 font-medium leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             Aiming High in Cybersecurity,<br />
             Coding Sharp in Full-Stack,<br />
             Crafting Delight in UI/UX.
           </p>
 
-          {/* Action Pill Button: Aim. Pull. Explore. */}
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => executeShot(activeTarget || TARGETS[1])}
-              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-teal-deep/85 hover:bg-teal-deep backdrop-blur-md border border-champagne/40 text-ivory text-xs font-mono shadow-lg transition-all group hover:scale-[1.03] active:scale-95"
-            >
-              <span className="w-4 h-4 rounded-full border border-champagne flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-champagne group-hover:scale-125 transition-transform" />
-              </span>
-              <span>Aim. Pull. Explore.</span>
-              <ArrowRight className="w-3.5 h-3.5 text-champagne group-hover:translate-x-1 transition-transform" />
-            </button>
-
-            {/* Quick Resume Download for Technical Interviewers */}
+          {/* Quick Direct Scroll Link for Technical Interviewers */}
+          <div className="mt-6 flex items-center gap-4">
             <a
-              href={cvFile}
-              download="Aroliani_Munte_CV.pdf"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/20 text-ivory text-xs font-mono transition-all"
+              href="#about"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-ivory/70 hover:text-champagne transition-colors drop-shadow"
             >
-              <span>Download CV</span>
+              <span>Scroll directly</span>
+              <ArrowDown className="w-3.5 h-3.5 text-champagne" />
             </a>
-          </div>
-
-          {/* Real-time Aim HUD readout */}
-          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm border border-champagne/20 text-[11px] font-mono text-champagne-soft">
-            <Crosshair className="w-3 h-3 text-champagne animate-spin-slow" />
-            <span>Target Locked: <strong className="text-ivory font-bold">{activeTarget?.label}</strong> ({activeTarget?.distanceLabel})</span>
           </div>
         </motion.div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. DYNAMIC AIMING SIGHT TRAJECTORY (CONNECTS ARROW TIP TO TARGET) */}
+      {/* 3. INTERACTIVE 3D SVG LAYER: BOW, DRAGGABLE ARROW, STRING & TARGETS */}
       {/* ========================================================================= */}
-      {activeTarget && !flyingArrow && (
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-20">
-          <line
-            x1="28%"
-            y1="64%"
-            x2={`${activeTarget.xPercent}%`}
-            y2={`${activeTarget.yPercent}%`}
-            stroke="rgba(216,185,124,0.35)"
-            strokeWidth={isPulling ? "2" : "1.2"}
-            strokeDasharray="4 6"
-            className="animate-pulse"
-          />
-        </svg>
-      )}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"
+        viewBox="0 0 1376 768"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          {/* Wood Grain Gradient for Bow Limbs */}
+          <linearGradient id="heroBowWood" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#4a2c17" />
+            <stop offset="25%" stopColor="#87532d" />
+            <stop offset="50%" stopColor="#b37849" />
+            <stop offset="75%" stopColor="#87532d" />
+            <stop offset="100%" stopColor="#4a2c17" />
+          </linearGradient>
 
-      {/* ========================================================================= */}
-      {/* 4. THE 5 INTERACTIVE TARGET HOTSPOTS ACROSS THE HIGHLAND MEADOW */}
-      {/* ========================================================================= */}
-      <div className="absolute inset-0 z-20 pointer-events-auto">
+          {/* Champagne Gold Accents */}
+          <linearGradient id="heroChampagne" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#faecd2" />
+            <stop offset="50%" stopColor="#d8b97c" />
+            <stop offset="100%" stopColor="#a37e3d" />
+          </linearGradient>
+
+          {/* Arrow Shaft Cedar Wood Gradient */}
+          <linearGradient id="arrowShaft" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#5a351a" />
+            <stop offset="50%" stopColor="#ab7b51" />
+            <stop offset="100%" stopColor="#5a351a" />
+          </linearGradient>
+
+          {/* Subtle Golden Glow Filter */}
+          <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* --------------------------------------------------------------------- */}
+        {/* A. 5 TARGET HOTSPOTS & HIGHLIGHTS ACROSS THE FIELD */}
+        {/* --------------------------------------------------------------------- */}
         {TARGETS.map((target) => {
-          const isTargeted = activeTarget?.id === target.id;
+          const isSelected = activeTarget.id === target.id;
           const isHit = hitTargetId === target.id;
 
           return (
-            <div
+            <g
               key={target.id}
+              className="cursor-pointer pointer-events-auto"
               onClick={() => handleTargetClick(target)}
-              onMouseEnter={() => !isPulling && setActiveTarget(target)}
-              style={{
-                left: `${target.xPercent}%`,
-                top: `${target.yPercent}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-              className="absolute flex flex-col items-center cursor-pointer group"
-              title={`Tembak ke section ${target.label}`}
+              onPointerEnter={() => !isPulling && !isFlying && setActiveTarget(target)}
             >
-              {/* Floating Target Badge & Distance */}
-              <motion.div
-                animate={{
-                  y: isTargeted ? -8 : 0,
-                  scale: isTargeted ? 1.08 : 0.95,
-                  opacity: isTargeted ? 1 : 0.85,
-                }}
-                className={`mb-2 px-2.5 py-1 rounded-xl text-center transition-all duration-200 shadow-md ${
-                  isTargeted
-                    ? 'bg-teal-deep text-ivory border border-champagne ring-2 ring-champagne/40'
-                    : 'bg-black/60 text-ivory/90 border border-white/20 backdrop-blur-sm group-hover:bg-teal-deep'
-                }`}
+              {/* Target Banner Label (clean, visible, highlighted when aimed at) */}
+              <g
+                transform={`translate(${target.x}, ${target.y - 48})`}
+                opacity={isSelected ? 1 : 0.75}
               >
-                <div className="text-[11px] font-mono font-bold tracking-wider leading-none">
+                <rect
+                  x="-46"
+                  y="-14"
+                  width="92"
+                  height="22"
+                  rx="6"
+                  fill={isSelected ? 'rgba(15, 56, 62, 0.95)' : 'rgba(0, 0, 0, 0.55)'}
+                  stroke={isSelected ? '#d8b97c' : 'rgba(255, 255, 255, 0.2)'}
+                  strokeWidth={isSelected ? '1.5' : '1'}
+                />
+                <text
+                  x="0"
+                  y="2"
+                  textAnchor="middle"
+                  fill="#ffffff"
+                  fontSize="10"
+                  fontFamily="monospace"
+                  fontWeight="bold"
+                  letterSpacing="0.8px"
+                >
                   {target.label}
-                </div>
-                <div className="text-[9px] font-mono text-champagne mt-0.5 leading-none">
-                  {target.distanceLabel}
-                </div>
-              </motion.div>
+                </text>
+              </g>
 
-              {/* Interactive Target Reticle / Bullseye Hotspot */}
-              <motion.div
-                animate={{
-                  scale: isHit ? [1, 1.4, 0.9, 1.15, 1] : isTargeted ? 1.12 : 1,
-                  rotate: isHit ? [0, -5, 5, -2, 0] : 0,
-                }}
-                transition={{ duration: 0.4 }}
-                className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center"
-              >
-                {/* Glowing Reticle when targeted */}
-                {isTargeted && (
-                  <motion.div
-                    initial={{ scale: 0.7, opacity: 0 }}
-                    animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
-                    transition={{ repeat: Infinity, duration: 1.6 }}
-                    className="absolute inset-0 rounded-full border-2 border-champagne shadow-[0_0_15px_rgba(216,185,124,0.6)]"
-                  />
-                )}
+              {/* Target Bullseye Highlight Ring */}
+              <circle
+                cx={target.x}
+                cy={target.y}
+                r={isSelected ? '24' : '18'}
+                fill="transparent"
+                stroke={isSelected ? '#d8b97c' : 'transparent'}
+                strokeWidth={isSelected ? '2' : '1'}
+                strokeDasharray={isSelected ? '4 3' : 'none'}
+                opacity={isSelected ? 0.9 : 0}
+              />
 
-                {/* Bullseye Crosshair Center */}
-                <div className={`w-3.5 h-3.5 rounded-full border transition-all ${
-                  isTargeted ? 'bg-champagne border-white shadow-lg' : 'bg-white/40 border-transparent'
-                }`} />
-
-                {/* Hit Badge on impact */}
-                {isHit && (
-                  <motion.div
-                    initial={{ scale: 0.2, y: 10, opacity: 0 }}
-                    animate={{ scale: 1, y: -20, opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute -top-3 px-2 py-0.5 rounded-full bg-champagne text-teal-deep font-mono text-[10px] font-extrabold shadow-lg flex items-center gap-1"
-                  >
-                    <Sparkles className="w-3 h-3" />
-                    <span>HIT!</span>
-                  </motion.div>
-                )}
-              </motion.div>
-            </div>
+              {/* Impact Wobble Animation on Hit */}
+              {isHit && (
+                <circle
+                  cx={target.x}
+                  cy={target.y}
+                  r="35"
+                  fill="rgba(216, 185, 124, 0.25)"
+                  stroke="#d8b97c"
+                  strokeWidth="2"
+                  className="animate-ping"
+                />
+              )}
+            </g>
           );
         })}
-      </div>
 
-      {/* Radial Impact Shockwave */}
-      <AnimatePresence>
-        {impactPulse && (
-          <motion.div
-            initial={{ scale: 0.2, opacity: 0.9 }}
-            animate={{ scale: 3.2, opacity: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            style={{
-              left: `${impactPulse.x}%`,
-              top: `${impactPulse.y}%`,
-              transform: 'translate(-50%, -50%)',
-            }}
-            className="absolute pointer-events-none z-30 w-24 h-24 rounded-full border-2 border-champagne bg-champagne/20 shadow-[0_0_25px_rgba(216,185,124,0.8)]"
-          />
-        )}
-      </AnimatePresence>
+        {/* --------------------------------------------------------------------- */}
+        {/* B. BENT BOW LIMBS (DEFORMS DYNAMICALLY UNDER PULL TENSION) */}
+        {/* --------------------------------------------------------------------- */}
+        {/* Upper Limb */}
+        <path
+          d={`M 460 420 C 480 300, 485 180, ${tipTopFlexX} ${tipTopFlexY}`}
+          fill="none"
+          stroke="url(#heroBowWood)"
+          strokeWidth="14"
+          strokeLinecap="round"
+        />
+        {/* Upper Gold Tip */}
+        <circle cx={tipTopFlexX} cy={tipTopFlexY} r="7" fill="url(#heroChampagne)" />
 
-      {/* ========================================================================= */}
-      {/* 5. 3D PROJECTILE ARROW FLIGHT TRAJECTORY (RELEASED STATE) */}
-      {/* ========================================================================= */}
-      <AnimatePresence>
-        {flyingArrow && (
-          <motion.div
-            initial={{
-              left: `${flyingArrow.startX}%`,
-              top: `${flyingArrow.startY}%`,
-              scale: 1,
-              opacity: 1,
-              rotate: aimAngle,
-            }}
-            animate={{
-              left: `${flyingArrow.targetX}%`,
-              top: `${flyingArrow.targetY}%`,
-              scale: 0.16,
-              opacity: [1, 1, 0.9],
-              rotate: aimAngle,
-            }}
-            transition={{
-              duration: 0.42,
-              ease: [0.15, 0.8, 0.35, 1],
-            }}
-            className="absolute z-40 pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
-            style={{ transformOrigin: 'center center' }}
+        {/* Lower Limb */}
+        <path
+          d={`M 465 500 C 485 580, 490 660, ${tipBottomFlexX} ${tipBottomFlexY}`}
+          fill="none"
+          stroke="url(#heroBowWood)"
+          strokeWidth="14"
+          strokeLinecap="round"
+        />
+        {/* Lower Gold Tip */}
+        <circle cx={tipBottomFlexX} cy={tipBottomFlexY} r="7" fill="url(#heroChampagne)" />
+
+        {/* --------------------------------------------------------------------- */}
+        {/* C. VISIBLY STRETCHING BOWSTRING (ATTACHES TO TIPS & FOLLOWS NOCK) */}
+        {/* --------------------------------------------------------------------- */}
+        <polyline
+          points={`${tipTopFlexX},${tipTopFlexY} ${isFlying ? restNockX : currentNockX},${isFlying ? restNockY : currentNockY} ${tipBottomFlexX},${tipBottomFlexY}`}
+          fill="none"
+          stroke="rgba(245, 240, 225, 0.95)"
+          strokeWidth={isPulling ? "2" : "2.5"}
+          strokeLinejoin="round"
+        />
+
+        {/* --------------------------------------------------------------------- */}
+        {/* D. RESTING / DRAGGED ARROW (THE PHYSICAL DRAGGABLE OBJECT) */}
+        {/* --------------------------------------------------------------------- */}
+        {!isFlying && (
+          <g
+            className="cursor-grab active:cursor-grabbing pointer-events-auto select-none"
+            onPointerDown={handleArrowPointerDown}
+            style={{ touchAction: 'none' }}
           >
-            {/* Arrowhead (Golden Bodkin Point) */}
-            <div className="w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-l-[22px] border-l-champagne filter drop-shadow-[0_0_10px_rgba(216,185,124,0.9)]" />
-            {/* Wooden Shaft with Gold Banding */}
-            <div className="h-1.5 w-40 bg-gradient-to-r from-champagne via-wood to-wood-dark rounded-full shadow-lg" />
-            {/* Fletchings */}
-            <div className="w-6 h-4 bg-teal-muted rounded-l-md -ml-2" />
-            {/* Motion Blur Trail Streak */}
-            <div className="absolute right-0 w-52 h-1 bg-gradient-to-r from-transparent via-champagne/60 to-transparent blur-[1px]" />
+            {/* Generous Invisible Hit Area for Easy Touch & Mouse Grabbing */}
+            <line
+              x1={currentNockX}
+              y1={currentNockY}
+              x2={currentTipX}
+              y2={currentTipY}
+              stroke="transparent"
+              strokeWidth="50"
+              strokeLinecap="round"
+            />
+
+            {/* Arrow Shaft (Cedar Wood) */}
+            <line
+              x1={currentNockX}
+              y1={currentNockY}
+              x2={currentTipX}
+              y2={currentTipY}
+              stroke="url(#arrowShaft)"
+              strokeWidth="5.5"
+              strokeLinecap="round"
+            />
+
+            {/* Gold Thread Bandings along Shaft */}
+            <line
+              x1={currentTipX - unitX * 40}
+              y1={currentTipY - unitY * 40}
+              x2={currentTipX - unitX * 36}
+              y2={currentTipY - unitY * 36}
+              stroke="#d8b97c"
+              strokeWidth="6"
+            />
+            <line
+              x1={currentTipX - unitX * 70}
+              y1={currentTipY - unitY * 70}
+              x2={currentTipX - unitX * 66}
+              y2={currentTipY - unitY * 66}
+              stroke="#d8b97c"
+              strokeWidth="6"
+            />
+
+            {/* Golden Bodkin Arrowhead Pointing toward Active Target */}
+            <g transform={`translate(${currentTipX}, ${currentTipY}) rotate(${aimAngleDeg})`}>
+              <polygon
+                points="0,0 -24,-9 -20,0 -24,9"
+                fill="url(#heroChampagne)"
+                filter="url(#goldGlow)"
+              />
+            </g>
+
+            {/* Arrow Fletching Feathers (Teal & Gold at Nock) */}
+            <g transform={`translate(${currentNockX}, ${currentNockY}) rotate(${aimAngleDeg})`}>
+              <polygon points="0,0 35,-9 48,-9 12,0" fill="#0f383e" />
+              <polygon points="0,0 35,9 48,9 12,0" fill="#0f383e" />
+              <line x1="0" y1="0" x2="48" y2="0" stroke="#d8b97c" strokeWidth="2.5" />
+            </g>
+          </g>
+        )}
+
+        {/* --------------------------------------------------------------------- */}
+        {/* E. FLYING ARROW IN PERSPECTIVE FLIGHT TOWARD SELECTED TARGET */}
+        {/* --------------------------------------------------------------------- */}
+        {isFlying && (
+          <g>
+            {/* Motion Blur Trail */}
+            <line
+              x1={flyingNockX}
+              y1={flyingNockY}
+              x2={flyingNockX - unitX * (110 * flyingScale)}
+              y2={flyingNockY - unitY * (110 * flyingScale)}
+              stroke="rgba(216, 185, 124, 0.65)"
+              strokeWidth={4 * flyingScale}
+              strokeLinecap="round"
+            />
+
+            {/* Flying Arrow Shaft */}
+            <line
+              x1={flyingNockX}
+              y1={flyingNockY}
+              x2={flyingTipX}
+              y2={flyingTipY}
+              stroke="url(#arrowShaft)"
+              strokeWidth={5.5 * flyingScale}
+              strokeLinecap="round"
+            />
+
+            {/* Flying Arrowhead */}
+            <g transform={`translate(${flyingTipX}, ${flyingTipY}) rotate(${aimAngleDeg}) scale(${flyingScale})`}>
+              <polygon
+                points="0,0 -24,-9 -20,0 -24,9"
+                fill="url(#heroChampagne)"
+                filter="url(#goldGlow)"
+              />
+            </g>
+          </g>
+        )}
+      </svg>
+
+      {/* ========================================================================= */}
+      {/* 4. SUBTLE INTERACTION HINT NEAR ARROW (FADES OUT AFTER FIRST TOUCH) */}
+      {/* ========================================================================= */}
+      <AnimatePresence>
+        {!hasInteracted && !isPulling && !isFlying && (
+          <motion.div
+            initial={{ opacity: 0, x: 0 }}
+            animate={{ opacity: [0.5, 0.95, 0.5], x: [0, -6, 0] }}
+            exit={{ opacity: 0 }}
+            transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute',
+              left: `${(restNockX / 1376) * 100}%`,
+              top: `${(restNockY / 768) * 100 + 4}%`,
+              transform: 'translate(-50%, 0)',
+            }}
+            className="pointer-events-none z-30 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm border border-champagne/30 text-champagne text-[11px] font-mono shadow-md"
+          >
+            <span className="text-xs">←</span>
+            <span>Hold &amp; drag the arrow</span>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ========================================================================= */}
-      {/* 6. INTERACTIVE FOREGROUND ARROW RIG & TENSION GAUGE */}
-      {/* ========================================================================= */}
-      <div className="absolute inset-0 pointer-events-none z-30 flex flex-col justify-end pb-8 sm:pb-12 px-6 sm:px-12">
-        <div className="max-w-7xl mx-auto w-full flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4">
-          
-          {/* Drag-to-Pull Arrow Anchor / Interaction Controller */}
-          <div className="pointer-events-auto flex flex-col items-center">
-            {!flyingArrow && (
-              <div
-                onMouseDown={(e) => handleStartPull(e.clientX, e.clientY)}
-                onTouchStart={(e) => handleStartPull(e.touches[0].clientX, e.touches[0].clientY)}
-                className="relative group cursor-grab active:cursor-grabbing p-4 flex flex-col items-center"
-              >
-                {/* Tension Progress Arc / Badge */}
-                <motion.div
-                  animate={{
-                    scale: isPulling ? 1.05 : 1,
-                  }}
-                  className={`px-4 py-2 rounded-2xl backdrop-blur-md border shadow-xl flex items-center gap-2.5 transition-colors ${
-                    isPulling
-                      ? 'bg-teal-deep/95 border-champagne text-ivory ring-2 ring-champagne/40'
-                      : 'bg-black/60 hover:bg-black/75 border-white/20 text-ivory'
-                  }`}
-                >
-                  <span className="text-champagne font-mono font-bold text-sm">🏹</span>
-                  <div className="text-left font-mono">
-                    <div className="text-xs font-bold text-champagne-soft">
-                      {isPulling
-                        ? `Pull Tension: ${Math.round(pullProgress * 100)}%`
-                        : 'Hold & Drag to Pull Bow'}
-                    </div>
-                    <div className="text-[10px] text-ivory/70">
-                      {isPulling ? 'Release to shoot target' : `Aimed at: ${activeTarget?.label}`}
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Visual String & Arrow Pull Displacement */}
-                <motion.div
-                  style={{
-                    transform: `translateY(${pullProgress * 45}px) translateX(${-pullProgress * 30}px)`,
-                  }}
-                  className="mt-3 flex items-center gap-2 text-champagne text-xs font-mono font-bold group-hover:scale-105 transition-transform"
-                >
-                  <span className="animate-bounce">↓</span>
-                  <span>Pull Back &amp; Loose</span>
-                </motion.div>
-              </div>
-            )}
-          </div>
-
-          {/* Target Navigation Tabs for Quick Tap (Mobile & Recruiter Accessibility) */}
-          <div className="pointer-events-auto flex items-center gap-2 overflow-x-auto max-w-full pb-2 sm:pb-0 scrollbar-none">
-            {TARGETS.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => handleTargetClick(t)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all whitespace-nowrap border ${
-                  activeTarget?.id === t.id
-                    ? 'bg-champagne text-teal-deep font-bold border-champagne shadow-md'
-                    : 'bg-black/50 text-ivory/80 border-white/15 hover:bg-black/70 hover:text-ivory'
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Quick Direct Scroll Down Link */}
-          <div className="pointer-events-auto hidden md:flex items-center gap-2 text-xs font-mono text-ivory/70 hover:text-champagne transition-colors">
-            <a href="#about" className="flex items-center gap-1.5">
-              <span>Scroll directly</span>
-              <ArrowDown className="w-3.5 h-3.5 text-champagne animate-bounce" />
-            </a>
-          </div>
-
-        </div>
-      </div>
     </section>
   );
 };
