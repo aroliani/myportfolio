@@ -87,15 +87,19 @@ const Header = () => {
 
             <button
               onClick={handleOpenAi}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
+              className={`px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all shadow-sm ${
                 scrolled
-                  ? 'bg-white hover:bg-teal-light text-teal-deep border border-teal-deep/15'
-                  : 'bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/25 text-ivory'
+                  ? 'bg-teal-deep text-champagne hover:bg-teal-muted border border-champagne/30'
+                  : 'bg-black/40 hover:bg-black/60 backdrop-blur-md border border-champagne/40 text-champagne'
               }`}
-              title="Open AI Guide"
-              aria-label="Open AI Guide"
+              title="Open AI Assistant"
+              aria-label="Open AI Assistant"
             >
-              <Compass className="w-4 h-4 text-champagne" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-champagne">
+                <line x1="5" y1="19" x2="19" y2="5" />
+                <polyline points="10 5 19 5 19 14" />
+              </svg>
+              <span className="text-xs font-mono font-medium text-ivory">AI Assistant</span>
             </button>
           </div>
 

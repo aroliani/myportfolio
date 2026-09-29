@@ -18,7 +18,7 @@ const EXPERIENCES = [
     period: '2024',
     location: 'International / Hybrid',
     badge: 'International Fellowship',
-    badgeColor: 'bg-teal-light text-teal-deep border-teal-deep/20',
+    badgeColor: 'bg-teal-deep text-champagne border-champagne/40',
     icon: Award,
     description:
       'Competitively selected for the high-impact digital cooperation initiative backed by the ASEAN-Korea Cooperation Fund (AKCF), South Korea’s MSIT, NIPA, and Indonesia’s Komdigi.',
@@ -35,7 +35,7 @@ const EXPERIENCES = [
     period: 'Jan 2024 – Apr 2024',
     location: 'Cikarang, Indonesia',
     badge: 'Institutional QA',
-    badgeColor: 'bg-champagne-light text-wood-dark border-wood/20',
+    badgeColor: 'bg-wood text-ivory border-wood/30',
     icon: Briefcase,
     description:
       'Served within the Divisi Pengembangan & Manajemen Industri (DPMI), supporting campus-wide institutional quality management and documentation for national accreditation audits.',
@@ -52,7 +52,7 @@ const EXPERIENCES = [
     period: '2022 – Present',
     location: 'Cikarang, Indonesia',
     badge: 'Academic Track',
-    badgeColor: 'bg-ivory-dark text-charcoal border-charcoal/15',
+    badgeColor: 'bg-teal-light text-teal-deep border-teal-deep/20',
     icon: GraduationCap,
     description:
       'Pursuing Bachelor of Science in Informatics with a continuous focus on Cybersecurity, Web Applications, and User-Centric Product Design.',
@@ -69,22 +69,25 @@ const Experience = () => {
   return (
     <motion.section
       id="experience"
-      className="py-24 relative z-10 bg-ivory border-t border-teal-deep/5"
+      className="py-28 relative z-10 bg-gradient-to-b from-[#f7f3eb] via-[#faf7f2] to-[#f7f3eb] border-t border-champagne/30"
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}
     >
-      <div className="container mx-auto px-6 max-w-6xl">
+      {/* Warm Ambient Radial Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-champagne/15 via-transparent to-transparent pointer-events-none" />
+
+      <div className="container mx-auto px-6 max-w-6xl relative z-10">
         {/* Section Heading */}
         <div className="mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-light text-teal-deep border border-teal-deep/10 text-xs font-mono mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-deep text-champagne border border-champagne/40 text-xs font-mono font-bold tracking-wider shadow-sm mb-3">
             <span>04 / Track Record &amp; Milestones</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-teal-deep tracking-tight">
-            Experience<span className="text-wood">.</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-teal-deep tracking-tight">
+            Experience<span className="text-champagne font-sans">.</span>
           </h2>
-          <p className="mt-3 text-sm text-charcoal-muted max-w-xl font-normal leading-relaxed">
+          <p className="mt-2 text-sm text-charcoal-muted max-w-xl font-normal leading-relaxed">
             Real-world impact through international digital fellowships, institutional quality assurance audits, and university software engineering.
           </p>
         </div>
@@ -100,17 +103,17 @@ const Experience = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.12 }}
-                className="editorial-card p-6 sm:p-8 rounded-3xl bg-white border border-teal-deep/10 shadow-sm hover:shadow-md hover:border-teal-deep/20 transition-all"
+                className="p-6 sm:p-8 rounded-3xl bg-white/95 backdrop-blur-md border border-[#e2d8c3] hover:border-champagne/70 shadow-[0_10px_30px_rgba(15,56,62,0.06)] hover:shadow-[0_20px_40px_rgba(15,56,62,0.12)] transition-all duration-300"
               >
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                   {/* Left Info: Role & Org */}
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-light text-teal-deep flex items-center justify-center shrink-0 border border-teal-deep/10 shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-teal-deep text-champagne flex items-center justify-center shrink-0 border border-champagne/30 shadow-md">
                       <Icon className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full border ${exp.badgeColor}`}>
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span className={`text-[10px] font-mono font-bold px-3 py-0.5 rounded-full border shadow-sm ${exp.badgeColor}`}>
                           {exp.badge}
                         </span>
                       </div>
@@ -124,41 +127,42 @@ const Experience = () => {
                   </div>
 
                   {/* Right Info: Period & Location */}
-                  <div className="flex sm:items-center gap-4 text-xs font-mono text-charcoal-muted shrink-0">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ivory border border-teal-deep/5">
+                  <div className="flex sm:items-center gap-3 text-xs font-mono text-charcoal-muted shrink-0">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ivory border border-[#e2d8c3]">
                       <Calendar className="w-3.5 h-3.5 text-wood" />
-                      <span>{exp.period}</span>
+                      <span className="font-semibold text-charcoal">{exp.period}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ivory border border-teal-deep/5">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ivory border border-[#e2d8c3]">
                       <MapPin className="w-3.5 h-3.5 text-teal-deep" />
-                      <span>{exp.location}</span>
+                      <span className="font-medium text-charcoal">{exp.location}</span>
                     </div>
                   </div>
                 </div>
 
-                <p className="mt-5 text-sm text-charcoal leading-relaxed text-justify">
+                <p className="mt-5 text-sm text-charcoal-soft leading-relaxed text-justify">
                   {exp.description}
                 </p>
 
                 {/* Accomplishments */}
-                <div className="mt-5 pt-5 border-t border-teal-deep/5 space-y-2.5">
-                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-teal-deep mb-3">
-                    Key Contributions &amp; Outcomes:
+                <div className="mt-5 pt-5 border-t border-[#e2d8c3]/80 space-y-2.5">
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-teal-deep mb-3 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-champagne" />
+                    <span>Key Contributions &amp; Outcomes:</span>
                   </h4>
                   {exp.achievements.map((item, i) => (
-                    <div key={i} className="flex items-start gap-2.5 text-xs text-charcoal-muted leading-relaxed">
-                      <CheckCircle2 className="w-4 h-4 text-wood shrink-0 mt-0.5" />
+                    <div key={i} className="flex items-start gap-2.5 text-xs text-charcoal-soft leading-relaxed">
+                      <CheckCircle2 className="w-4 h-4 text-wood-dark shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Tech & Competency Badges */}
-                <div className="mt-6 pt-4 border-t border-teal-deep/5 flex flex-wrap gap-2">
+                <div className="mt-6 pt-4 border-t border-[#e2d8c3]/80 flex flex-wrap gap-2">
                   {exp.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2.5 py-1 rounded-lg bg-teal-light/50 text-teal-deep text-[11px] font-mono font-medium border border-teal-deep/5"
+                      className="px-3 py-1 rounded-xl bg-ivory text-teal-deep text-[11px] font-mono font-semibold border border-[#e2d8c3] hover:border-champagne transition-colors"
                     >
                       #{tag}
                     </span>

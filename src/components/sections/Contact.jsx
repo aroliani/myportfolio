@@ -56,7 +56,7 @@ const Contact = () => {
   return (
     <motion.section 
       id="contact" 
-      className="py-24 relative z-10 bg-ivory border-t border-teal-deep/5"
+      className="py-24 relative z-10 bg-gradient-to-b from-[#fdfbf7] via-[#f7f3eb] to-[#fdfbf7] border-t border-teal-deep/5"
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"

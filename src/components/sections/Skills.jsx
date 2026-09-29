@@ -11,7 +11,7 @@ const Skills = () => {
   return (
     <motion.section 
       id="skills" 
-      className="py-24 relative z-10 bg-ivory-light border-t border-teal-deep/5"
+      className="py-24 relative z-10 bg-gradient-to-b from-[#fdfbf7] via-[#f8f5ee] to-[#fdfbf7] border-t border-teal-deep/5"
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"

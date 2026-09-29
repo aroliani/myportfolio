@@ -271,28 +271,31 @@ ${projectData.map(p => `• [${p.category}] ${p.title}: ${p.description}`).join(
 
   return (
     <>
-      {/* Floating Action Button (FAB) at Bottom-Right */}
+      {/* Floating Action Button at Bottom-Right: 3D-styled Upward Arrow */}
       <div className="fixed bottom-6 right-6 z-50">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative group p-3.5 rounded-full bg-teal-deep text-ivory shadow-lg hover:shadow-xl hover:bg-teal-muted focus:outline-none transition-all duration-200 flex items-center justify-center border border-champagne/40"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Open Portfolio AI Guide"
+          className="relative group p-2.5 rounded-2xl bg-teal-deep/85 hover:bg-teal-deep text-champagne backdrop-blur-md shadow-xl hover:shadow-2xl focus:outline-none transition-all duration-200 flex items-center justify-center border border-champagne/50"
+          whileHover={{ scale: 1.08, y: -2 }}
+          whileTap={{ scale: 0.94 }}
+          aria-label="Open AI Assistant"
         >
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {isOpen ? (
               <X className="w-5 h-5 text-ivory" />
             ) : (
               <>
-                <ArrowIcon className="w-5 h-5 text-champagne" />
-                <span className="hidden sm:inline-block font-mono text-xs font-semibold pr-1 text-ivory">
-                  Guide
+                {/* 3D-styled upward arrow */}
+                <div className="w-6 h-6 flex items-center justify-center drop-shadow-[0_2px_6px_rgba(216,185,124,0.6)]">
+                  <ArrowIcon className="w-5 h-5 text-champagne drop-shadow" />
+                </div>
+                <span className="font-mono text-xs font-bold tracking-wide pr-1 text-ivory">
+                  AI Assistant
                 </span>
               </>
             )}
           </div>
-          <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-emerald-500 border border-white rounded-full" />
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border-2 border-teal-deep rounded-full animate-pulse" />
         </motion.button>
       </div>
 

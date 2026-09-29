@@ -280,7 +280,7 @@ const Projects = () => {
     <>
       <motion.section 
         id="projects" 
-        className="py-24 relative z-10 bg-ivory"
+        className="py-24 relative z-10 bg-gradient-to-b from-[#f7f3eb] via-[#faf7f2] to-[#f7f3eb] border-t border-teal-deep/5"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
