@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { DownloadOutlined, EyeOutlined } from '@ant-design/icons';
-import profileImage from '../../assets/foto.jpg';
+import profileImage from '../../assets/foto.png';
 import cvFile from '../../assets/Aroliani Munte-CV.pdf';
 
 const sectionVariants = {
