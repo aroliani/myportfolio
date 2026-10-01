@@ -37,13 +37,13 @@ const Profile = () => (
 
         <div className="md:w-3/5 text-center md:text-left">
           <p className="text-lg text-gray-300 leading-relaxed md:text-justify">
-            Hi, I’m <strong>Aroliani Munte</strong>, an Informatics student in my sixth semester at President University. My interests revolve around <span className="text-violet-400">Cybersecurity</span>, <span className="text-violet-400">UI/UX Design</span>, and <span className="text-violet-400">Full-Stack Web Development</span>.
+            Hi, I'm <strong>Aroliani Munte</strong>, a final-year Informatics student at President University with a GPA of <span className="text-violet-400 font-semibold">3.80/4.00</span>. My interests revolve around <span className="text-violet-400">Cybersecurity</span>, <span className="text-violet-400">UI/UX Design</span>, and <span className="text-violet-400">Full-Stack Web Development</span>.
             <br /><br />
             I love designing digital interfaces that are clean, simple, and user-friendly using tools like Figma and Canva. I usually turn those mockups into responsive web pages with HTML, CSS, JavaScript, and React.js.
             <br /><br />
-            I'm also exploring security-focused topics, especially around Linux systems and network protection.
+            I'm also exploring security-focused topics, especially around Linux systems and network protection. I am currently advancing my software development expertise as a participant in the prestigious <span className="text-violet-400">Korea-ASEAN Digital Academy (KADA)</span>, focusing on full-stack development, AI ethics, cloud deployment, and DevOps.
             <br /><br />
-            I'm currently open to internship opportunities where I can grow, contribute, and apply what I’ve learned in real-world projects — particularly in areas related to cybersecurity or full-stack development.
+            I'm currently open to internship opportunities where I can grow, contribute, and apply what I've learned in real-world projects — particularly in areas related to cybersecurity or full-stack development.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">

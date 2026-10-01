@@ -16,7 +16,7 @@ const DigitalRain = () => {
     const drops = Array.from({ length: Math.ceil(columns) }).fill(1);
 
     const draw = () => {
-      ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
+      ctx.fillStyle = 'rgba(13, 17, 23, 0.04)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#8b5cf6'; 
       ctx.font = fontSize + 'px Fira Code';
@@ -44,7 +44,7 @@ const DigitalRain = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full z-0 opacity-10"></canvas>;
+  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full z-0 opacity-30"></canvas>;
 };
 
 export default DigitalRain;
