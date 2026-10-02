@@ -20,11 +20,11 @@ function Portfolio() {
           <Profile />
           <Projects />
           <Skills />
-          <AiAssistant />
           <Contact />
         </main>
         <Footer />
       </div>
+      <AiAssistant />
     </>
   );
 }

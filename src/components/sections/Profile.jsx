@@ -4,68 +4,31 @@ import { DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import profileImage from '../../assets/foto.png';
 import cvFile from '../../assets/Aroliani Munte-CV.pdf';
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-};
-
 const Profile = () => (
-  <motion.section
-    id="profile"
-    className="py-20 md:py-24 bg-black/30"
-    variants={sectionVariants}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ amount: 0.3 }}
-  >
+  <motion.section id="profile" className="bg-[#151a24]/76 py-20 md:py-24" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.7 }}>
     <div className="container mx-auto px-6">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-violet-400 font-mono">About Me</h2>
-        <p className="mt-3 text-lg text-gray-400 max-w-2xl mx-auto">
-          Get to know who I am and what drives my passion in tech.
-        </p>
+        <p className="mt-3 text-lg text-gray-300 max-w-2xl mx-auto">Get to know who I am and what drives my passion in tech.</p>
       </div>
-
-      <div className="mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16">
-        <div className="md:w-2/5 flex-shrink-0">
-          <img
-            src={profileImage}
-            alt="Aroliani's Profile Photo"
-            className="w-200 h-200 rounded-full object-cover shadow-2xl shadow-violet-500/10 mx-auto border-4 border-gray-800 transition-all duration-500 hover:border-violet-500 hover:scale-105"
-          />
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-10 md:flex-row md:gap-12 lg:gap-16">
+        <div className="w-full flex-shrink-0 md:w-[44%]">
+          <img src={profileImage} alt="Aroliani Munte" className="mx-auto h-72 w-72 rounded-full border-4 border-gray-700 object-cover shadow-2xl shadow-violet-500/15 transition-all duration-500 hover:scale-[1.02] hover:border-violet-500 sm:h-80 sm:w-80 md:h-[min(38vw,31rem)] md:w-[min(38vw,31rem)]" />
         </div>
-
-        <div className="md:w-3/5 text-center md:text-left">
-          <p className="text-lg text-gray-300 leading-relaxed md:text-justify">
-            Hi, I'm <strong>Aroliani Munte</strong>, a final-year Informatics student at President University with a GPA of <span className="text-violet-400 font-semibold">3.80/4.00</span>. My interests revolve around <span className="text-violet-400">Cybersecurity</span>, <span className="text-violet-400">UI/UX Design</span>, and <span className="text-violet-400">Full-Stack Web Development</span>.
-            <br /><br />
-            I love designing digital interfaces that are clean, simple, and user-friendly using tools like Figma and Canva. I usually turn those mockups into responsive web pages with HTML, CSS, JavaScript, and React.js.
-            <br /><br />
-            I'm also exploring security-focused topics, especially around Linux systems and network protection. I am currently advancing my software development expertise as a participant in the prestigious <span className="text-violet-400">Korea-ASEAN Digital Academy (KADA)</span>, focusing on full-stack development, AI ethics, cloud deployment, and DevOps.
-            <br /><br />
-            I'm currently open to internship opportunities where I can grow, contribute, and apply what I've learned in real-world projects — particularly in areas related to cybersecurity or full-stack development.
-          </p>
-
-          <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
-            <a
-              href={cvFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border border-violet-500 text-violet-400 font-bold py-3 px-6 rounded-lg hover:bg-violet-500 hover:text-white transition-colors font-mono"
-            >
-              <EyeOutlined />
-              View CV
-            </a>
-            <a
-              href={cvFile}
-              download="Aroliani Munte-CV.pdf"
-              className="inline-flex items-center gap-2 bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition-colors font-mono"
-            >
-              <DownloadOutlined />
-              Download CV
-            </a>
+        <div className="w-full text-center md:w-[56%] md:text-left">
+          <div className="mb-5">
+            <p className="font-mono text-sm uppercase text-violet-300">A little about me</p>
+            <h3 className="mt-2 text-2xl font-bold text-gray-100 sm:text-3xl">Hi, I’m Aroo, short for Aroliani.</h3>
           </div>
-
+          <div className="space-y-5 text-base leading-relaxed text-gray-200 sm:text-lg">
+            <p>I’m an Informatics graduate awaiting graduation from President University, with experience in web development, database management, IT operations, documentation, and cybersecurity fundamentals.</p>
+            <p>I’ve worked on academic and capstone projects and supported IT operations and security monitoring during my internship.</p>
+            <p>I’m interested in exploring diverse IT roles, and I’m always ready to learn and adapt to new technologies and working environments.</p>
+          </div>
+          <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+            <a href={cvFile} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-violet-500 text-violet-400 font-bold py-3 px-6 rounded-lg hover:bg-violet-500 hover:text-white transition-colors font-mono"><EyeOutlined />View CV</a>
+            <a href={cvFile} download="Aroliani Munte-CV.pdf" className="inline-flex items-center gap-2 bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition-colors font-mono"><DownloadOutlined />Download CV</a>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,27 +30,28 @@ const Header = () => {
     { href: '#contact', label: 'Contact Me' },
   ];
 
-  const linkClasses = (href) => 
-    `hover:text-violet-400 transition-colors ${activeSection === href.substring(1) ? 'nav-link-active' : ''}`;
+  const linkClasses = (href) => `rounded-lg border px-3 py-2 transition-colors ${activeSection === href.substring(1)
+    ? 'border-violet-400/30 bg-violet-400/10 text-violet-300'
+    : 'border-transparent text-gray-300 hover:border-gray-600 hover:bg-white/5 hover:text-white'}`;
 
   return (
-    <header className="bg-black/50 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-800">
+    <header className="sticky top-0 z-40 border-b border-gray-700/70 bg-[#10141c]/95 py-3 backdrop-blur-xl">
       <div className="container mx-auto px-6">
-        <nav className="flex justify-between items-center py-4">
-          <a href="#hero" className="text-xl font-bold text-violet-400 font-mono transition-all hover:text-violet-300">AROLIANI MUNTE</a>
-          <div className="hidden md:flex items-center space-x-8 font-mono text-gray-400">
-            {navLinks.map(link => (
-              <a key={link.href} href={link.href} className={linkClasses(link.href)}>{link.label}</a>
+        <nav className="flex items-center justify-between gap-4">
+          <a href="#hero" className="shrink-0 border-r border-gray-700 pr-4 font-mono text-lg font-bold text-violet-300 transition-colors hover:text-white sm:pr-6">AROLIANI MUNTE</a>
+          <div className="hidden items-center gap-1 rounded-xl border border-gray-700/80 bg-[#171d28] p-1.5 shadow-lg shadow-black/20 md:flex font-mono text-sm">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} aria-current={activeSection === link.href.substring(1) ? 'page' : undefined} className={linkClasses(link.href)}>{link.label}</a>
             ))}
           </div>
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-gray-300 text-2xl z-50">
-            {isOpen ? '✕' : '☰'}
+          <button type="button" onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={isOpen} className="z-50 rounded-lg border border-gray-700 bg-[#171d28] p-2 text-gray-200 transition hover:border-violet-400/50 hover:text-violet-300 md:hidden">
+            {isOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
         </nav>
         {isOpen && (
-          <div className="md:hidden pb-4">
-            {navLinks.map(link => (
-              <a key={link.href} href={link.href} onClick={() => setIsOpen(false)} className={`block text-center py-3 font-mono text-gray-400 hover:bg-gray-800 rounded-md ${linkClasses(link.href)}`}>
+          <div className="mt-3 grid gap-1 rounded-xl border border-gray-700 bg-[#171d28] p-2 font-mono text-sm md:hidden">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} onClick={() => setIsOpen(false)} className={linkClasses(link.href)}>
                 {link.label}
               </a>
             ))}

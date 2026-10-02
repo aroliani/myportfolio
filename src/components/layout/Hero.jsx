@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const Hero = () => {
     const [subtitle, setSubtitle] = useState('');
-    const roles = ["Cyber Security Enthusiast", "Full-Stack Developer", "UI/UX Designer"];
+    const roles = ["Informatics Graduate", "IT Admin Support", "IT Operations Support", "IT Documentation & Records Management"];
 
     useEffect(() => {
         let roleIndex = 0;
