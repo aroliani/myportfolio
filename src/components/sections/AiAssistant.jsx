@@ -4,6 +4,7 @@ import { MessageCircle, Send, Sparkles, Trash2, X } from 'lucide-react';
 
 const STORAGE_KEY = 'arooliani-ai-chat-history-v1';
 const LANGUAGE_STORAGE_KEY = 'arooliani-ai-language-v1';
+const OPEN_EVENT = 'arooliani:open-assistant';
 const interfaceText = {
   en: {
     title: "Aroo's AI Assistant",
@@ -98,23 +99,23 @@ const HudIcon = ({ isLoading, size = 40 }) => {
           <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <radialGradient id={coreId} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-          <stop offset="40%" stopColor="#c4b5fd" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.3" />
+          <stop offset="0%" stopColor="#fff8e7" stopOpacity="1" />
+          <stop offset="40%" stopColor="#ffd98a" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#eaa83a" stopOpacity="0.3" />
         </radialGradient>
       </defs>
-      <motion.circle cx="60" cy="60" r="50" fill="none" stroke="#7c3aed" strokeWidth="1" opacity="0.25" animate={{ r: [48, 52, 48] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} filter={`url(#${glowId})`} />
-      <motion.circle cx="60" cy="60" r="36" fill="none" stroke="#8b5cf6" strokeWidth="1.5" strokeDasharray="8 4" opacity="0.4" animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '60px 60px' }} />
-      <motion.ellipse cx="60" cy="60" rx="42" ry="15" fill="none" stroke="#7c3aed" strokeWidth="1.5" opacity="0.7" animate={{ rotate: 360 }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '60px 60px' }} filter={`url(#${glowId})`} />
-      <motion.circle cx="60" cy="60" r="28" fill="none" stroke="#a78bfa" strokeWidth="2" strokeDasharray={isLoading ? '18 5' : '14 8'} opacity="0.6" animate={{ rotate: isLoading ? 360 : -360 }} transition={{ duration: isLoading ? 1.5 : 4, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '60px 60px' }} />
+      <motion.circle cx="60" cy="60" r="50" fill="none" stroke="#2bb894" strokeWidth="1" opacity="0.25" animate={{ r: [48, 52, 48] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} filter={`url(#${glowId})`} />
+      <motion.circle cx="60" cy="60" r="36" fill="none" stroke="#4fdcc0" strokeWidth="1.5" strokeDasharray="8 4" opacity="0.4" animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '60px 60px' }} />
+      <motion.ellipse cx="60" cy="60" rx="42" ry="15" fill="none" stroke="#2bb894" strokeWidth="1.5" opacity="0.7" animate={{ rotate: 360 }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '60px 60px' }} filter={`url(#${glowId})`} />
+      <motion.circle cx="60" cy="60" r="28" fill="none" stroke="#ffd98a" strokeWidth="2" strokeDasharray={isLoading ? '18 5' : '14 8'} opacity="0.6" animate={{ rotate: isLoading ? 360 : -360 }} transition={{ duration: isLoading ? 1.5 : 4, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '60px 60px' }} />
       <motion.g opacity="0.5" animate={{ rotate: [0, 5, 0] }} transition={{ duration: 5, repeat: Infinity }} style={{ transformOrigin: '60px 60px' }}>
-        <line x1="60" y1="22" x2="60" y2="38" stroke="#c4b5fd" strokeWidth="1" />
-        <line x1="60" y1="82" x2="60" y2="98" stroke="#c4b5fd" strokeWidth="1" />
-        <line x1="22" y1="60" x2="38" y2="60" stroke="#c4b5fd" strokeWidth="1" />
-        <line x1="82" y1="60" x2="98" y2="60" stroke="#c4b5fd" strokeWidth="1" />
+        <line x1="60" y1="22" x2="60" y2="38" stroke="#ffe9bd" strokeWidth="1" />
+        <line x1="60" y1="82" x2="60" y2="98" stroke="#ffe9bd" strokeWidth="1" />
+        <line x1="22" y1="60" x2="38" y2="60" stroke="#ffe9bd" strokeWidth="1" />
+        <line x1="82" y1="60" x2="98" y2="60" stroke="#ffe9bd" strokeWidth="1" />
       </motion.g>
       <motion.circle cx="60" cy="60" r="10" fill={`url(#${coreId})`} filter={`url(#${glowId})`} animate={{ r: isLoading ? [8, 13, 10, 12, 10] : [9, 11, 9] }} transition={{ duration: isLoading ? 1 : 2.5, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.path d="M60 50 L62 58 L70 60 L62 62 L60 70 L58 62 L50 60 L58 58 Z" fill="white" animate={{ opacity: [0, 0.9, 0] }} transition={{ duration: 2.5, repeat: Infinity }} style={{ transformOrigin: '60px 60px' }} />
+      <motion.path d="M60 50 L62 58 L70 60 L62 62 L60 70 L58 62 L50 60 L58 58 Z" fill="#fff8e7" animate={{ opacity: [0, 0.9, 0] }} transition={{ duration: 2.5, repeat: Infinity }} style={{ transformOrigin: '60px 60px' }} />
     </svg>
   );
 };
@@ -148,6 +149,12 @@ const AiAssistant = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, isLoading, isOpen]);
+
+  useEffect(() => {
+    const openHandler = () => setIsOpen(true);
+    window.addEventListener(OPEN_EVENT, openHandler);
+    return () => window.removeEventListener(OPEN_EVENT, openHandler);
+  }, []);
 
   const handleClearChat = () => {
     setMessages([]);
@@ -187,23 +194,37 @@ const AiAssistant = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-[60] md:bottom-7 md:right-7">
+    <div id="ai-assistant-widget" className="fixed bottom-5 right-5 z-[60] md:bottom-7 md:right-7">
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 16, scale: 0.96 }} className="relative mb-4 flex h-[min(31rem,calc(100vh-7rem))] w-[min(23rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-xl border border-violet-400/30 bg-[#0d1117] shadow-2xl shadow-violet-950/30">
-            <div className="border-b border-violet-400/20 bg-[#161b22] px-4 py-3">
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.96 }}
+            className="relative mb-4 flex h-[min(31rem,calc(100vh-7rem))] w-[min(23rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-loch-300/30 bg-night-900 shadow-2xl shadow-black/60"
+          >
+            <div className="border-b border-loch-300/20 bg-night-800/80 px-4 py-3">
               <div className="flex items-center justify-between">
-                <div className="flex min-w-0 items-center gap-3"><HudIcon isLoading={isLoading} size={42}/><div className="min-w-0"><h2 className="font-mono text-sm font-semibold text-violet-300">{labels.title}</h2><p className="flex items-center gap-1.5 font-mono text-xs text-gray-400"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{labels.status}</p></div></div>
-              <div className="flex shrink-0 items-center">
-                  <button type="button" onClick={() => setIsClearConfirmOpen(true)} disabled={isLoading || messages.length === 0} aria-label={labels.clearHistory} title={labels.clearHistory} className="rounded-lg p-2 text-gray-300 hover:bg-white/10 disabled:opacity-40"><Trash2 size={16}/></button>
-                  <button type="button" onClick={() => setIsOpen(false)} aria-label={labels.closeChat} title={labels.closeChat} className="rounded-lg p-2 text-gray-300 hover:bg-white/10"><X size={18}/></button>
+                <div className="flex min-w-0 items-center gap-3">
+                  <HudIcon isLoading={isLoading} size={42} />
+                  <div className="min-w-0">
+                    <h2 className="font-display text-sm font-semibold text-mist">{labels.title}</h2>
+                    <p className="flex items-center gap-1.5 font-mono text-xs text-mist/60">
+                      <span className="h-1.5 w-1.5 rounded-full bg-loch-400" />
+                      {labels.status}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center">
+                  <button type="button" onClick={() => setIsClearConfirmOpen(true)} disabled={isLoading || messages.length === 0} aria-label={labels.clearHistory} title={labels.clearHistory} className="rounded-lg p-2 text-mist/70 hover:bg-white/10 disabled:opacity-40"><Trash2 size={16} /></button>
+                  <button type="button" onClick={() => setIsOpen(false)} aria-label={labels.closeChat} title={labels.closeChat} className="rounded-lg p-2 text-mist/70 hover:bg-white/10"><X size={18} /></button>
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between">
-                <span className="font-mono text-xs text-gray-400">{labels.language}</span>
-                <div className="inline-flex rounded-md border border-white/10 bg-[#0d1117] p-0.5" role="group" aria-label={labels.language}>
+                <span className="font-mono text-xs text-mist/60">{labels.language}</span>
+                <div className="inline-flex rounded-md border border-loch-300/20 bg-night-950 p-0.5" role="group" aria-label={labels.language}>
                   {['en', 'id'].map((option) => (
-                    <button key={option} type="button" onClick={() => setLanguage(option)} aria-pressed={language === option} className={`rounded px-2.5 py-1 font-mono text-xs transition ${language === option ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-gray-100'}`}>
+                    <button key={option} type="button" onClick={() => setLanguage(option)} aria-pressed={language === option} className={`rounded px-2.5 py-1 font-mono text-xs transition ${language === option ? 'bg-ember-500 text-[#21150a]' : 'text-mist/60 hover:text-mist'}`}>
                       {option === 'en' ? 'English' : 'Indonesia'}
                     </button>
                   ))}
@@ -214,15 +235,15 @@ const AiAssistant = () => {
               {messages.length === 0 ? (
                 <div className="flex h-full flex-col justify-center py-2">
                   <div className="mb-5">
-                    <div className="mb-3 grid h-10 w-10 place-items-center rounded-lg border border-violet-400/20 bg-violet-500/10 text-violet-300"><Sparkles size={19}/></div>
-                    <h3 className="font-mono text-xl font-semibold text-gray-100">{labels.greeting}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-gray-400">{labels.introduction}</p>
+                    <div className="mb-3 grid h-10 w-10 place-items-center rounded-lg border border-ember-300/25 bg-ember-500/10 text-ember-300"><Sparkles size={19} /></div>
+                    <h3 className="font-display text-xl font-semibold text-mist">{labels.greeting}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-mist/65">{labels.introduction}</p>
                   </div>
-                  <div className="mb-2 flex items-center gap-2 font-mono text-xs uppercase text-violet-300"><MessageCircle size={14}/>{labels.suggestionsLabel}</div>
+                  <div className="mb-2 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-loch-300"><MessageCircle size={14} />{labels.suggestionsLabel}</div>
                   <div className="grid gap-2">
                     {labels.quickQuestions.map((question) => (
-                      <button key={question} type="button" onClick={() => sendQuestion(question)} disabled={isLoading} className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#161b22] px-3 py-2.5 text-left text-sm text-gray-200 transition hover:border-violet-400/40 hover:bg-violet-500/10 disabled:opacity-50">
-                        <span>{question}</span><Send size={14} className="shrink-0 text-violet-300"/>
+                      <button key={question} type="button" onClick={() => sendQuestion(question)} disabled={isLoading} className="flex items-center justify-between gap-3 rounded-lg border border-loch-300/15 bg-night-800/60 px-3 py-2.5 text-left text-sm text-mist/90 transition hover:border-ember-300/40 hover:bg-ember-500/10 disabled:opacity-50">
+                        <span>{question}</span><Send size={14} className="shrink-0 text-ember-300" />
                       </button>
                     ))}
                   </div>
@@ -231,30 +252,30 @@ const AiAssistant = () => {
                 <div aria-live="polite">
                   {messages.map((message) => (
                     <div key={message.id} className={`mt-4 flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
-                      <span className="mb-1 px-1 font-mono text-[10px] uppercase text-gray-500">{message.role === 'user' ? labels.you : 'Aroo'}</span>
-                      <p className={`max-w-[92%] whitespace-pre-wrap rounded-xl p-3 font-mono text-sm leading-relaxed ${message.role === 'user' ? 'rounded-tr-sm bg-violet-600 text-white' : 'rounded-tl-sm border border-violet-400/20 bg-violet-500/10 text-gray-100'}`}>
+                      <span className="mb-1 px-1 font-mono text-[10px] uppercase text-mist/40">{message.role === 'user' ? labels.you : 'Aroo'}</span>
+                      <p className={`max-w-[92%] whitespace-pre-wrap rounded-xl p-3 font-mono text-sm leading-relaxed ${message.role === 'user' ? 'rounded-tr-sm bg-ember-500 text-[#21150a]' : 'rounded-tl-sm border border-loch-300/20 bg-loch-500/10 text-mist'}`}>
                         {message.text}
                       </p>
                     </div>
                   ))}
                 </div>
               )}
-              {isLoading && <p className="mt-3 font-mono text-sm text-violet-300">{labels.thinking}</p>}
+              {isLoading && <p className="mt-3 font-mono text-sm text-ember-300">{labels.thinking}</p>}
               <div ref={messagesEndRef} />
             </div>
-            <form onSubmit={handleAskAi} className="flex gap-2 border-t border-violet-400/20 bg-[#161b22]/70 p-3">
-              <input value={input} onChange={(event) => setInput(event.target.value)} placeholder={labels.placeholder} aria-label={labels.inputLabel} className="min-w-0 flex-1 rounded-lg border border-white/10 bg-[#0d1117] px-3 py-2.5 font-mono text-sm text-white outline-none placeholder:text-gray-500 focus:border-violet-400"/>
-              <button type="submit" disabled={isLoading || !input.trim()} aria-label={labels.send} className="rounded-lg bg-violet-600 px-3 text-white transition hover:bg-violet-500 disabled:opacity-50"><Send size={18}/></button>
+            <form onSubmit={handleAskAi} className="flex gap-2 border-t border-loch-300/20 bg-night-800/60 p-3">
+              <input value={input} onChange={(event) => setInput(event.target.value)} placeholder={labels.placeholder} aria-label={labels.inputLabel} className="min-w-0 flex-1 rounded-lg border border-loch-300/20 bg-night-950 px-3 py-2.5 font-mono text-sm text-white outline-none placeholder:text-mist/35 focus:border-loch-300/70" />
+              <button type="submit" disabled={isLoading || !input.trim()} aria-label={labels.send} className="rounded-lg bg-ember-500 px-3 text-[#21150a] transition hover:brightness-110 disabled:opacity-50"><Send size={18} /></button>
             </form>
             <AnimatePresence>
               {isClearConfirmOpen && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-20 grid place-items-center bg-black/70 p-5 backdrop-blur-sm">
-                  <motion.div role="dialog" aria-modal="true" aria-labelledby="clear-chat-title" initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} className="w-full max-w-xs rounded-xl border border-violet-400/30 bg-[#161b22] p-5 shadow-2xl shadow-black/40">
-                    <h3 id="clear-chat-title" className="font-mono text-base font-semibold text-gray-100">{labels.confirmTitle}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-gray-400">{labels.confirmDescription}</p>
+                  <motion.div role="dialog" aria-modal="true" aria-labelledby="clear-chat-title" initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} className="w-full max-w-xs rounded-xl border border-loch-300/30 bg-night-800 p-5 shadow-2xl shadow-black/40">
+                    <h3 id="clear-chat-title" className="font-display text-base font-semibold text-mist">{labels.confirmTitle}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-mist/65">{labels.confirmDescription}</p>
                     <div className="mt-5 flex justify-end gap-2">
-                      <button type="button" onClick={() => setIsClearConfirmOpen(false)} className="rounded-lg border border-white/10 px-3 py-2 font-mono text-xs text-gray-300 transition hover:bg-white/5">{labels.cancel}</button>
-                      <button type="button" onClick={handleClearChat} className="rounded-lg bg-violet-600 px-3 py-2 font-mono text-xs text-white transition hover:bg-violet-500">{labels.clear}</button>
+                      <button type="button" onClick={() => setIsClearConfirmOpen(false)} className="rounded-lg border border-loch-300/20 px-3 py-2 font-mono text-xs text-mist/75 transition hover:bg-white/5">{labels.cancel}</button>
+                      <button type="button" onClick={handleClearChat} className="rounded-lg bg-ember-500 px-3 py-2 font-mono text-xs text-[#21150a] transition hover:brightness-110">{labels.clear}</button>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -263,12 +284,17 @@ const AiAssistant = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <button type="button" onClick={() => setIsOpen((open) => !open)} aria-label={isOpen ? 'Close AI assistant' : 'Open AI assistant'} title="Ask Aroo's AI" className="ml-auto grid h-14 w-14 place-items-center rounded-full border-2 border-violet-400/70 bg-[#0d1117] shadow-xl shadow-violet-950/40 ring-4 ring-white/10 transition hover:scale-105 hover:border-violet-300 md:h-16 md:w-16">
-        <HudIcon isLoading={isLoading} size={48}/>
+      <button
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        aria-label={isOpen ? 'Close AI assistant' : 'Open AI assistant'}
+        title="Ask Aroo's AI"
+        className="ml-auto grid h-14 w-14 place-items-center rounded-full border-2 border-ember-300/70 bg-night-900 shadow-xl shadow-black/50 ring-4 ring-loch-300/10 transition hover:scale-105 hover:border-ember-200 md:h-16 md:w-16"
+      >
+        <HudIcon isLoading={isLoading} size={48} />
       </button>
     </div>
   );
 };
 
 export default AiAssistant;
-

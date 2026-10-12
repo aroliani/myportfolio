@@ -1,5 +1,5 @@
 import React from 'react';
-import DigitalRain from './components/layout/DigitalRain.jsx';
+import Backdrop from './components/layout/Backdrop.jsx';
 import Footer from './components/layout/Footer.jsx';
 import Header from './components/layout/Header.jsx';
 import Hero from './components/layout/Hero.jsx';
@@ -12,7 +12,7 @@ import Skills from './components/sections/Skills.jsx';
 function Portfolio() {
   return (
     <>
-      <DigitalRain />
+      <Backdrop />
       <div className="relative z-10">
         <Header />
         <main>
